@@ -1,0 +1,52 @@
+- content_for :js
+  javascript:
+    $('.datepicker').datepicker({
+      language: 'ja'
+    });
+
+= form_for message, html: { class: "form-horizontal" } do |form|
+  - message.from_at = l(message.from_at, format: :date) unless message.from_at.nil?
+  - message.to_at = l(message.to_at, format: :date) unless message.to_at.nil?
+
+  - if message.errors.any?
+      .alert.alert-danger
+        ul
+          - message.errors.full_messages.each do |error_message|
+            li = error_message
+
+  .box
+    .box-header.with-border
+      h3.box-title メッセージ
+
+    .box-body
+      .form-group
+        = form.label :twitter_account_id, "", class: "col-sm-2 control-label"
+        .col-sm-2
+          = form.collection_select :twitter_account_id, TwitterAccount.all, :id, :account, {}, { class: "form-control" }
+      .form-group
+        = form.label :category, "", class: "col-sm-2 control-label"
+        .col-sm-2
+          = form.select :category, [["朝", 1], ["夕方", 2]], {}, { class: "form-control" }
+      .form-group
+        = form.label :text, "", class: "col-sm-2 control-label"
+        .col-sm-8
+          = form.text_area :text, size: "10x10", class: "form-control"
+      .form-group
+        = form.label :from_at, "", class: "col-sm-2 control-label"
+        .col-sm-3
+          .input-group
+            .input-group-addon
+              i.fa.fa-calendar
+            = form.text_field :from_at, class: "form-control datepicker"
+      .form-group
+        = form.label :to_at, "", class: "col-sm-2 control-label"
+        .col-sm-3
+          .input-group
+            .input-group-addon
+              i.fa.fa-calendar
+            = form.text_field :to_at, class: "form-control datepicker"
+
+    .box-footer
+      .form-group
+        .col-sm-offset-2.col-sm-5
+          = form.submit class: "btn btn-info btn-sm"

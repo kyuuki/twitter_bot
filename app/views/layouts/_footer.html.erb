@@ -1,0 +1,8 @@
+<!-- To the right -->
+<div class="pull-right hidden-xs">
+</div>
+<!-- Default to the left -->
+<% twitter_account = TwitterAccount.first %>
+<% if not twitter_account.nil? %>
+  <%= link_to "@#{twitter_account.account}", "https://twitter.com/#{twitter_account.account}", { target: "_blank" } %>
+<% end %>

@@ -1,0 +1,21 @@
+p#notice = notice
+
+p
+  strong Account:
+  = @twitter_account.account
+p
+  strong Consumer key:
+  = @twitter_account.consumer_key
+p
+  strong Consumer secret:
+  = @twitter_account.consumer_secret
+p
+  strong Access token:
+  = @twitter_account.access_token
+p
+  strong Access token secret:
+  = @twitter_account.access_token_secret
+
+=> link_to 'Edit', edit_twitter_account_path(@twitter_account)
+'|
+=< link_to 'Back', twitter_accounts_path

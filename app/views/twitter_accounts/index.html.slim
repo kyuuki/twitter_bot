@@ -1,0 +1,31 @@
+- content_for :title
+  | Twitter アカウント一覧
+
+.box
+  .box-header.with-border
+    .pull-right
+      = link_to new_twitter_account_path, { class: "btn btn-default btn-sm" } do
+        i.fa.fa-plus
+        | &nbsp; 新規登録
+
+  .box-body.table-responsive
+    table.table.table-bordered.table-hover
+      thead
+        tr
+          th.col-sm-1 ID
+          th.col-sm-2 アカウント名
+          th Consumer key
+          th Consumer secret
+          th Access token
+          th Access token secret
+          th
+
+        tbody
+          == render @twitter_accounts
+
+  .box-footer
+    .pull-right
+      = link_to new_twitter_account_path, { class: "btn btn-default btn-sm" } do
+        i.fa.fa-plus
+        | &nbsp; 新規登録
+

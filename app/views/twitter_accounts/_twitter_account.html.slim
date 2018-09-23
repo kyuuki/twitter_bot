@@ -1,0 +1,11 @@
+tr
+  td = twitter_account.id
+  td = link_to twitter_account.account, "https://twitter.com/#{twitter_account.account}", { target: :_blank }
+  td = twitter_account.consumer_key.truncate(12)
+  td = twitter_account.consumer_secret.truncate(12)
+  td = twitter_account.access_token.truncate(12)
+  td = twitter_account.access_token_secret.truncate(12)
+  td.text-right
+    = link_to "編集", edit_twitter_account_path(twitter_account), { class: "btn btn-default btn-sm" }
+    | &nbsp;
+    = link_to "削除", twitter_account, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-default btn-sm"

@@ -1,0 +1,14 @@
+tr
+  td = message.id
+  td
+    - if (message.category == 1)
+      | 朝
+    - else
+      | 夕方
+  td = message.text
+  td = l(message.from_at, format: :date)
+  td = l(message.to_at, format: :date)
+  td.text-right
+    = link_to "編集", edit_message_path(message), { class: "btn btn-default btn-sm" }
+    | &nbsp;
+    = link_to "削除", message, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-default btn-sm"

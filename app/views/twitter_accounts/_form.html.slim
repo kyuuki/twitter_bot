@@ -1,0 +1,24 @@
+= form_for @twitter_account do |f|
+  - if @twitter_account.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@twitter_account.errors.count, "error")} prohibited this twitter_account from being saved:"
+      ul
+        - @twitter_account.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    = f.label :account
+    = f.text_field :account
+  .field
+    = f.label :consumer_key
+    = f.text_field :consumer_key
+  .field
+    = f.label :consumer_secret
+    = f.text_field :consumer_secret
+  .field
+    = f.label :access_token
+    = f.text_field :access_token
+  .field
+    = f.label :access_token_secret
+    = f.text_field :access_token_secret
+  .actions = f.submit

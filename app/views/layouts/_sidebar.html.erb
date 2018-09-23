@@ -1,0 +1,15 @@
+<!-- Sidebar Menu -->
+<ul class="sidebar-menu" data-widget="tree">
+  <li class="header">メイン</li>
+  <!-- Optionally, you can add icons to the links -->
+  <% if request.path_info == messages_path %>
+    <li class="active">
+  <% else %>
+    <li>
+  <% end %>
+    <%= link_to messages_path do %>
+      <i class="fa fa-link"></i> <span>メッセージ一覧</span>
+    <% end %>
+  </li>
+</ul>
+<!-- /.sidebar-menu -->

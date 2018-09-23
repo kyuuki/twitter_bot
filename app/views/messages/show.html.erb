@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Twitter Account:</strong>
+  <%= @message.twitter_account&.account %>
+</p>
+
+<p>
+  <strong>Category:</strong>
+  <%= @message.category %>
+</p>
+
+<p>
+  <strong>Text:</strong>
+  <%= @message.text %>
+</p>
+
+<p>
+  <strong>From at:</strong>
+  <%= @message.from_at %>
+</p>
+
+<p>
+  <strong>To at:</strong>
+  <%= @message.to_at %>
+</p>
+
+<%= link_to 'Edit', edit_message_path(@message) %> |
+<%= link_to 'Back', messages_path %>
