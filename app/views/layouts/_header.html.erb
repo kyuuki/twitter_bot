@@ -1,4 +1,4 @@
-<%= link_to "/", { class: "logo" } do %>
+<%= link_to root_path, { class: "logo" } do %>
   <span class="logo-mini"></span>
   <span class="logo-lg">Twitter ボット</span>
 <% end %>
@@ -22,6 +22,9 @@
       </li>
 
       <li>
+        <%= link_to destroy_admin_user_session_path, method: :delete do %>
+          ログアウト
+        <% end %>
       </li>
     </ul>
   </div>

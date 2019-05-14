@@ -65,6 +65,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # テンプレートエンジン
 gem 'slim-rails'
 
+# ログイン機能
+gem 'devise'
+
 # Twitter ボット
 gem 'twitter'
 
