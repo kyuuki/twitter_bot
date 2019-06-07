@@ -40,7 +40,7 @@ namespace :twitter do
     end
 
     begin
-      client.update(message)
+      client.update!(message)
     rescue => exception
       Rails.logger.info "Twitter update error."
       Rails.logger.info exception.message
@@ -102,7 +102,7 @@ namespace :twitter do
     end
 
     begin
-      client.update(message)
+      client.update!(message)
     rescue => exception
       Rails.logger.info "Twitter update error."
       Rails.logger.info exception.message
