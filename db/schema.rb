@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_14_080413) do
+ActiveRecord::Schema.define(version: 2019_09_27_164626) do
 
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 2019_05_14_080413) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "twitter_account_id"
+    t.integer "post_weekday"
+    t.time "post_time"
     t.index ["twitter_account_id"], name: "index_messages_on_twitter_account_id"
   end
 

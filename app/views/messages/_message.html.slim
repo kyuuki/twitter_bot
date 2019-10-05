@@ -2,9 +2,11 @@ tr
   td = message.id
   td
     - if (message.category == 1)
-      | 朝
+      | 曜日
     - else
-      | 夕方
+      | ランダム
+  td = I18n.t("date.abbr_day_names")[message.post_weekday]
+  td = message.post_time.strftime("%H:%M") unless message.post_time.nil?
   td = message.text
   td = l(message.from_at, format: :date)
   td = l(message.to_at, format: :date)

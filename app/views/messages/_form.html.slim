@@ -1,7 +1,20 @@
 - content_for :js
   javascript:
-    $('.datepicker').datepicker({
-      language: 'ja'
+    $('#timepicker1').datetimepicker({
+      format: 'HH:mm',
+      stepping: 10
+    });
+    $('#datepicker1').datetimepicker({
+      autoclose: true,
+      format: 'L',
+      locale: 'ja',
+      dayViewHeaderFormat: 'YYYY年MM月'
+    });
+    $('#datepicker2').datetimepicker({
+      autoclose: true,
+      format: 'L',
+      locale: 'ja',
+      dayViewHeaderFormat: 'YYYY年MM月'
     });
 
 = form_for message, html: { class: "form-horizontal" } do |form|
@@ -26,7 +39,18 @@
       .form-group
         = form.label :category, "", class: "col-sm-2 control-label"
         .col-sm-2
-          = form.select :category, [["朝", 1], ["夕方", 2]], {}, { class: "form-control" }
+          = form.select :category, [["曜日", 1], ["ランダム", 2]], {}, { class: "form-control" }
+      .form-group
+        = form.label :post_weekday, "", class: "col-sm-2 control-label"
+        .col-sm-1
+          = form.select :post_weekday, I18n.t("date.abbr_day_names").map.with_index{ |name, i| [name, i] }, {}, { class: "form-control" }
+      .form-group
+        = form.label :post_time, "", class: "col-sm-2 control-label"
+        .col-sm-3
+          .input-group id="timepicker1" data-target-input="nearest"
+            = form.time_field :post_time, { class: "form-control datetimepicker-input", "data-target": "#timepicker1" }
+            .input-group-addon data-target="#timepicker1" data-toggle="datetimepicker"
+              i.fa.fa-clock-o
       .form-group
         = form.label :text, "", class: "col-sm-2 control-label"
         .col-sm-8
@@ -34,17 +58,17 @@
       .form-group
         = form.label :from_at, "", class: "col-sm-2 control-label"
         .col-sm-3
-          .input-group
-            .input-group-addon
+          .input-group id="datepicker1" data-target-input="nearest"
+            = form.text_field :from_at, { class: "form-control datetimepicker-input", "data-target": "#datepicker1" }
+            .input-group-addon data-target="#datepicker1" data-toggle="datetimepicker"
               i.fa.fa-calendar
-            = form.text_field :from_at, class: "form-control datepicker"
       .form-group
         = form.label :to_at, "", class: "col-sm-2 control-label"
         .col-sm-3
-          .input-group
-            .input-group-addon
+          .input-group id="datepicker2" data-target-input="nearest"
+            = form.text_field :to_at, { class: "form-control datetimepicker-input", "data-target": "#datepicker2" }
+            .input-group-addon data-target="#datepicker2" data-toggle="datetimepicker"
               i.fa.fa-calendar
-            = form.text_field :to_at, class: "form-control datepicker"
 
     .box-footer
       .form-group

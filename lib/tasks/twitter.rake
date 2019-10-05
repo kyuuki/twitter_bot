@@ -3,6 +3,47 @@ require 'rss'
 
 namespace :twitter do
   #
+  # 特定の曜日、時刻にメッセージをツイート (10 分おき)
+  #
+  desc "Tweet a weekday time message"
+  task :post_weekday_time, [ 'category' ] => :environment do |task, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info "Task #{task.name} start."
+
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    Rails.logger.level = Logger::DEBUG
+
+    now = Time.current
+    Rails.logger.info "time = #{now}"
+    Rails.logger.info "wday = #{now.wday}"
+
+    # カテゴリ
+    category = args.category.to_i
+    Rails.logger.info "category = #{category}"
+
+    # Twitter アカウント
+    # TODO: 逆にメッセージから取得する？
+    twitter = TwitterAccount.first
+    Rails.logger.info "twitter_account = #{twitter.account}"
+
+    # TODO: 現在時刻から取り出したい時刻を取得
+    post_time = "10:00"
+
+    # ツイート作成
+    # 曜日と時刻でしぼる
+    messages = Message
+                 .where(twitter_account: twitter, category: category, post_weekday: now.wday)
+                 .where("from_at <= :now AND :now < to_at", { now: now }).order(:id)
+                 #.where("post_time = :time", { time: "20:00" })  # 結構悩みそうなのであきらめる
+    messages.each do |message|
+      if message.post_time.to_s(:time) == post_time
+        # TODO: ツイート汎用化
+        puts message.text
+      end
+    end
+  end
+
+  #
   # 特定のカテゴリメッセージをツイート
   #
   desc "Tweet a category message"

@@ -13,6 +13,8 @@ ja:
       message:
         twitter_account_id: Twitter アカウント
         category: カテゴリ
+        post_weekday: 投稿曜日
+        post_time: 投稿時刻
         text: テキスト
         from_at: 開始日
         to_at: 終了日
