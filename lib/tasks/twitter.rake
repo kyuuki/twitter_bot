@@ -28,7 +28,7 @@ namespace :twitter do
     # 現在時刻から取り出したい時刻を取得
     h = now.utc.hour
     m = (now.utc.min / 10) * 10  # 1 分単位切り捨て (34 → 30, 29 → 20)
-    post_time = "%02d:%02d:00" % [h, m]
+    post_time = "%02d%02d00" % [h, m]
     Rails.logger.info "post_time = #{post_time}"
 
     # ツイート作成
@@ -36,7 +36,8 @@ namespace :twitter do
     messages = Message
                  .where(twitter_account: twitter, category: category, post_weekday: now.wday)
                  .where("from_at <= :now AND :now < to_at", { now: now }).order(:id)
-                 .where("time(post_time) = :time", { time: post_time })
+                 .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })
+                 #.where("time(post_time) = :time", { time: post_time })
 
     if (messages.size == 0)
       Rails.logger.info "There is no category message."
