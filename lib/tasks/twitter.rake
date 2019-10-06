@@ -22,25 +22,71 @@ namespace :twitter do
     Rails.logger.info "category = #{category}"
 
     # Twitter アカウント
-    # TODO: 逆にメッセージから取得する？
     twitter = TwitterAccount.first
     Rails.logger.info "twitter_account = #{twitter.account}"
 
-    # TODO: 現在時刻から取り出したい時刻を取得
-    post_time = "10:00"
+    # 現在時刻から取り出したい時刻を取得
+    h = now.utc.hour
+    m = (now.utc.min / 10) * 10  # 1 分単位切り捨て (34 → 30, 29 → 20)
+    post_time = "%02d:%02d:00" % [h, m]
+    Rails.logger.info "post_time = #{post_time}"
 
     # ツイート作成
     # 曜日と時刻でしぼる
     messages = Message
                  .where(twitter_account: twitter, category: category, post_weekday: now.wday)
                  .where("from_at <= :now AND :now < to_at", { now: now }).order(:id)
-                 #.where("post_time = :time", { time: "20:00" })  # 結構悩みそうなのであきらめる
-    messages.each do |message|
-      if message.post_time.to_s(:time) == post_time
-        # TODO: ツイート汎用化
-        puts message.text
-      end
+                 .where("time(post_time) = :time", { time: post_time })
+
+    if (messages.size == 0)
+      Rails.logger.info "There is no category message."
+      Rails.logger.info "Task #{task.name} failed."
+      next
     end
+
+    # 送信
+    messages.each do |message|
+      message.post
+    end
+
+    Rails.logger.info "Task #{task.name} end."
+  end
+
+  #
+  # 特定のカテゴリから 1 つをランダムツイート
+  #
+  desc "Tweet a category randam message"
+  task :post_randam, [ 'category' ] => :environment do |task, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info "Task #{task.name} start."
+
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    Rails.logger.level = Logger::DEBUG
+
+    # カテゴリ
+    category = args.category.to_i
+    Rails.logger.info "category = #{category}"
+
+    # Twitter アカウント
+    twitter = TwitterAccount.first
+    Rails.logger.info "twitter_account = #{twitter.account}"
+
+    # ツイート取得
+    messages = Message
+                 .where(twitter_account: twitter, category: category)
+                 .where("from_at <= :now AND :now < to_at", { now: Time.zone.now })
+
+    if (messages.size == 0)
+      Rails.logger.info "There is no category message."
+      Rails.logger.fatal "Task #{task.name} failed."
+      next
+    end
+
+    # 送信
+    message = messages[rand(messages.size)]
+    message.post
+
+    Rails.logger.info "Task #{task.name} end."
   end
 
   #
