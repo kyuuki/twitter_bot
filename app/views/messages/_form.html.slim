@@ -32,10 +32,11 @@
       h3.box-title メッセージ
 
     .box-body
-      .form-group
+      /.form-group
         = form.label :twitter_account_id, "", class: "col-sm-2 control-label"
         .col-sm-2
           = form.collection_select :twitter_account_id, TwitterAccount.all, :id, :account, {}, { class: "form-control" }
+      = form.hidden_field :twitter_account_id
       .form-group
         = form.label :category, "", class: "col-sm-2 control-label"
         .col-sm-2
@@ -55,20 +56,22 @@
         = form.label :text, "", class: "col-sm-2 control-label"
         .col-sm-8
           = form.text_area :text, size: "10x10", class: "form-control"
-      .form-group
+      /.form-group
         = form.label :from_at, "", class: "col-sm-2 control-label"
         .col-sm-3
           .input-group id="datepicker1" data-target-input="nearest"
             = form.text_field :from_at, { class: "form-control datetimepicker-input", "data-target": "#datepicker1" }
             .input-group-addon data-target="#datepicker1" data-toggle="datetimepicker"
               i.fa.fa-calendar
-      .form-group
+      = form.hidden_field :from_at
+      /.form-group
         = form.label :to_at, "", class: "col-sm-2 control-label"
         .col-sm-3
           .input-group id="datepicker2" data-target-input="nearest"
             = form.text_field :to_at, { class: "form-control datetimepicker-input", "data-target": "#datepicker2" }
             .input-group-addon data-target="#datepicker2" data-toggle="datetimepicker"
               i.fa.fa-calendar
+      = form.hidden_field :to_at
 
     .box-footer
       .form-group

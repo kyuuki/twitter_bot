@@ -4,6 +4,15 @@ class Message < ApplicationRecord
   validates :from_at, presence: true
   validates :to_at, presence: true
 
+  with_options if: :category_is_week? do
+    validates :post_weekday, presence: true
+    validates :post_time, presence: true
+  end
+
+  def category_is_week?
+    self.category == 1
+  end
+
   # 表示用のモデルに変更
   # - 終了日時を前の日の 00:00 にする
   def to_view!
@@ -14,6 +23,14 @@ class Message < ApplicationRecord
   # - 終了日時を次の日の 00:00 にする
   def from_view!
     self.to_at = self.to_at.tomorrow unless self.to_at.nil?
+  end
+
+  # カテゴリが曜日とランダム用
+  def modify_for_weekday_and_random!
+    if self.category == 2
+      self.post_weekday = nil
+      self.post_time = nil
+    end
   end
 
   #

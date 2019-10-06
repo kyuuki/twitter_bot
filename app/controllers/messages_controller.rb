@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @messages = Message.order(:category, :from_at, :to_at)
+    @messages = Message.order(:category, :post_weekday).order("time(post_time, '+9 hours')")
     @messages.map {|message| message.to_view!}
   end
 
@@ -16,6 +16,9 @@ class MessagesController < ApplicationController
   # GET /messages/new
   def new
     @message = Message.new
+    @message.twitter_account = TwitterAccount.first
+    @message.from_at = "0000-01-01"
+    @message.to_at = "9999-01-01"
   end
 
   # GET /messages/1/edit
@@ -28,6 +31,7 @@ class MessagesController < ApplicationController
   def create
     @message = Message.new(message_params)
     @message.from_view!
+    @message.modify_for_weekday_and_random!
 
     respond_to do |format|
       if @message.save
@@ -45,7 +49,8 @@ class MessagesController < ApplicationController
   def update
     @message.assign_attributes(message_params)
     @message.from_view!
-    
+    @message.modify_for_weekday_and_random!
+
     respond_to do |format|
       if @message.save
         format.html { redirect_to messages_path, notice: 'Message was successfully updated.' }

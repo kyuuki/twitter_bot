@@ -55,8 +55,8 @@ namespace :twitter do
   #
   # 特定のカテゴリから 1 つをランダムツイート
   #
-  desc "Tweet a category randam message"
-  task :post_randam, [ 'category' ] => :environment do |task, args|
+  desc "Tweet a category random message"
+  task :post_random, [ 'category' ] => :environment do |task, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info "Task #{task.name} start."
 
