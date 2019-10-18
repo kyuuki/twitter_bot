@@ -5,7 +5,7 @@ class MessagesController < ApplicationController
   # GET /messages.json
   def index
     #@messages = Message.order(:category, :post_weekday).order("time(post_time, '+9 hours')")
-    @messages = Message.order(:category, :post_weekday).order("post_time AT TIME ZONE 'Japan'")
+    @messages = Message.order(:category, :post_weekday).order("post_time AT TIME ZONE 'Japan'").order(:text)
     @messages.map {|message| message.to_view!}
   end
 
