@@ -39,13 +39,15 @@
       = form.hidden_field :twitter_account_id
       .form-group
         = form.label :category, "", class: "col-sm-2 control-label"
-        .col-sm-2
+        /.col-sm-2
           = form.select :category, [["曜日", 1], ["ランダム", 2]], {}, { class: "form-control" }
-      .form-group
+        .col-sm-2
+          = form.select :category, [["ランダム", 2]], {}, { class: "form-control" }
+      /.form-group
         = form.label :post_weekday, "", class: "col-sm-2 control-label"
         .col-sm-1
           = form.select :post_weekday, I18n.t("date.abbr_day_names").map.with_index{ |name, i| [name, i] }, {}, { class: "form-control" }
-      .form-group
+      /.form-group
         = form.label :post_time, "", class: "col-sm-2 control-label"
         .col-sm-3
           .input-group id="timepicker1" data-target-input="nearest"
