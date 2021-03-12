@@ -38,11 +38,12 @@
           = form.collection_select :twitter_account_id, TwitterAccount.all, :id, :account, {}, { class: "form-control" }
       = form.hidden_field :twitter_account_id
       .form-group
-        = form.label :category, "", class: "col-sm-2 control-label"
+        /= form.label :category, "", class: "col-sm-2 control-label"
         /.col-sm-2
           = form.select :category, [["曜日", 1], ["ランダム", 2]], {}, { class: "form-control" }
         .col-sm-2
-          = form.select :category, [["ランダム", 2]], {}, { class: "form-control" }
+          /= form.select :category, [["ランダム", 2]], {}, { class: "form-control" }
+          = form.hidden_field :category, value: 2
       /.form-group
         = form.label :post_weekday, "", class: "col-sm-2 control-label"
         .col-sm-1
