@@ -200,4 +200,72 @@ namespace :twitter do
 
     Rails.logger.info "Task #{task.name} end."
   end
+
+  #
+  # https://news.netkeiba.com/?rf=navi スクレイピングツイート
+  #
+  desc "Tweet netkeiba.com"
+  task :latest_news_netkeiba => :environment do |task|
+    # 基本的には不明な例外は発生しないように設計。end ログが唯一の手がかり。
+
+    # https://qiita.com/naoty_k/items/0be1a055932b5b461766
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info "Task #{task.name} start."
+
+    # Twitter アカウント
+    twitter = TwitterAccount.first
+    if (twitter.nil?)
+      Rails.logger.info "There is no TwitterAccount."
+      Rails.logger.fatal "Task #{task.name} failed."
+      next
+    end
+    Rails.logger.info "twitter_account = #{twitter.account}"
+
+    # スクレイピング
+    begin
+      title, url = ScrapingUtil.scrape_netkeiba
+    rescue => exception
+      Rails.logger.info "Scraping error."
+      Rails.logger.info exception.message
+      Rails.logger.fatal "Task #{task.name} failed."
+      raise exception
+    end
+
+    Rails.logger.debug title
+    Rails.logger.debug url
+
+    # ツイート取得 (ランダムツイート)
+    messages = Message.where(twitter_account: twitter, category: 2)
+
+    if (messages.size == 0)
+      Rails.logger.info "There is no category message."
+      Rails.logger.fatal "Task #{task.name} failed."
+      next
+    end
+
+    message = messages[rand(messages.size)]
+    
+    # ツイート作成
+    text = "#{title}\n#{url}\n\n#{message.text}"
+    Rails.logger.info text
+
+    # 送信
+    client = Twitter::REST::Client.new do |config|
+      config.consumer_key        = twitter.consumer_key
+      config.consumer_secret     = twitter.consumer_secret
+      config.access_token        = twitter.access_token
+      config.access_token_secret = twitter.access_token_secret
+    end
+
+    begin
+      client.update!(text)
+    rescue => exception
+      Rails.logger.info "Twitter update error."
+      Rails.logger.info exception.message
+      Rails.logger.fatal "Task #{task.name} failed."
+      raise exception
+    end
+
+    Rails.logger.info "Task #{task.name} end."
+  end
 end

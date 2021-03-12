@@ -71,3 +71,6 @@ gem 'devise'
 # Twitter ボット
 gem 'twitter'
 
+# スクレイピング
+gem 'nokogiri'
+
