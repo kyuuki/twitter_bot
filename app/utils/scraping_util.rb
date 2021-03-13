@@ -36,7 +36,7 @@ module ScrapingUtil
     doc = Nokogiri::HTML.parse(str)
 
     # 1 つ目の記事取り出し
-    div = doc.xpath("//div[@id='news-view-default']//div[@class='NewsList NetkeibaNewsList']")[1]
+    div = doc.xpath("//div[@id='news-view-default']//div[@class='NewsList NetkeibaNewsList']")[0]
     
     url   = div.xpath(".//a").attribute("href").value
     title = div.xpath(".//h2").text
