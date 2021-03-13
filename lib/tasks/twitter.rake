@@ -246,7 +246,7 @@ namespace :twitter do
     message = messages[rand(messages.size)]
     
     # ツイート作成
-    text = "#{title}\n#{url}\n\n#{message.text}"
+    text = "#{title}\n\n#{message.text}\n\n#{url}"
     Rails.logger.info text
 
     # 送信
