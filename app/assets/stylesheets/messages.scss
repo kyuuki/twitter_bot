@@ -9,3 +9,8 @@
     border: 1px solid red;
   }
 }
+
+//https://cly7796.net/blog/css/hide-the-icon-that-is-displayed-when-the-input-type-is-date-or-time/
+.icon-del::-webkit-calendar-picker-indicator {
+  display: none;
+}

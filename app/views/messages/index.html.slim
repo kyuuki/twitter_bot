@@ -14,12 +14,12 @@
       thead
         tr
           th.col-sm-1 ID
-          /th.col-sm-1 = t('activerecord.attributes.message.category')
-          /th.col-sm-1 = t('activerecord.attributes.message.post_weekday')
-          /th.col-sm-1 = t('activerecord.attributes.message.post_time')
-          th.col-sm-5 = t('activerecord.attributes.message.text')
-          /th.col-sm-1 = t('activerecord.attributes.message.from_at')
-          /th.col-sm-1 = t('activerecord.attributes.message.to_at')
+          th.col-sm-1 = t('activerecord.attributes.message.category')
+          th.col-sm-1 = t('activerecord.attributes.message.post_weekday')
+          th.col-sm-1 = t('activerecord.attributes.message.post_time')
+          th.col-sm-4 = t('activerecord.attributes.message.text')
+          th.col-sm-1 = t('activerecord.attributes.message.from_at')
+          th.col-sm-1 = t('activerecord.attributes.message.to_at')
           th.col-sm-1
       tbody
         == render @messages

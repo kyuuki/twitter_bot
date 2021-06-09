@@ -32,49 +32,49 @@
       h3.box-title メッセージ
 
     .box-body
-      /.form-group
+      .form-group
         = form.label :twitter_account_id, "", class: "col-sm-2 control-label"
         .col-sm-2
           = form.collection_select :twitter_account_id, TwitterAccount.all, :id, :account, {}, { class: "form-control" }
       = form.hidden_field :twitter_account_id
       .form-group
-        /= form.label :category, "", class: "col-sm-2 control-label"
-        /.col-sm-2
-          = form.select :category, [["曜日", 1], ["ランダム", 2]], {}, { class: "form-control" }
+        = form.label :category, "", class: "col-sm-2 control-label"
         .col-sm-2
+          = form.select :category, [["曜日", 1], ["ランダム", 2]], {}, { class: "form-control" }
+        /.col-sm-2
           /= form.select :category, [["ランダム", 2]], {}, { class: "form-control" }
           = form.hidden_field :category, value: 2
-      /.form-group
+      .form-group
         = form.label :post_weekday, "", class: "col-sm-2 control-label"
         .col-sm-1
           = form.select :post_weekday, I18n.t("date.abbr_day_names").map.with_index{ |name, i| [name, i] }, {}, { class: "form-control" }
-      /.form-group
+      .form-group
         = form.label :post_time, "", class: "col-sm-2 control-label"
         .col-sm-3
           .input-group id="timepicker1" data-target-input="nearest"
-            = form.time_field :post_time, { class: "form-control datetimepicker-input", "data-target": "#timepicker1" }
+            = form.time_field :post_time, { class: "form-control datetimepicker-input icon-del", "data-target": "#timepicker1" }
             .input-group-addon data-target="#timepicker1" data-toggle="datetimepicker"
               i.fa.fa-clock-o
       .form-group
         = form.label :text, "", class: "col-sm-2 control-label"
         .col-sm-8
           = form.text_area :text, size: "10x10", class: "form-control"
-      /.form-group
+      .form-group
         = form.label :from_at, "", class: "col-sm-2 control-label"
         .col-sm-3
           .input-group id="datepicker1" data-target-input="nearest"
             = form.text_field :from_at, { class: "form-control datetimepicker-input", "data-target": "#datepicker1" }
             .input-group-addon data-target="#datepicker1" data-toggle="datetimepicker"
               i.fa.fa-calendar
-      = form.hidden_field :from_at
-      /.form-group
+      /= form.hidden_field :from_at
+      .form-group
         = form.label :to_at, "", class: "col-sm-2 control-label"
         .col-sm-3
           .input-group id="datepicker2" data-target-input="nearest"
             = form.text_field :to_at, { class: "form-control datetimepicker-input", "data-target": "#datepicker2" }
             .input-group-addon data-target="#datepicker2" data-toggle="datetimepicker"
               i.fa.fa-calendar
-      = form.hidden_field :to_at
+      /= form.hidden_field :to_at
 
     .box-footer
       .form-group

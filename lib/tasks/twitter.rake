@@ -36,8 +36,8 @@ namespace :twitter do
     messages = Message
                  .where(twitter_account: twitter, category: category, post_weekday: now.wday)
                  .where("from_at <= :now AND :now < to_at", { now: now }).order(:id)
-                 .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })
-                 #.where("time(post_time) = :time", { time: post_time })
+                 .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
+                 #.where("time(post_time) = :time", { time: post_time })  # SQLite3
 
     if (messages.size == 0)
       Rails.logger.info "There is no category message."
