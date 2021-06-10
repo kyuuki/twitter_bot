@@ -75,6 +75,17 @@ class MessagesController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def upload_new
+  end
+  
+  def upload
+    upload_file = params[:file]
+
+    # TODO: 保存処理
+    
+    redirect_to messages_url, notice: 'Uploaded.'
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

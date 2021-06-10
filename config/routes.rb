@@ -5,7 +5,12 @@ Rails.application.routes.draw do
   # scope がパスワード代わり
   #scope Rails.application.credentials.admin_url do
   scope ENV.fetch("ADMIN_URL", Rails.application.credentials.admin_url) do
-    resources :messages
+    resources :messages do
+      collection do
+        get 'upload/new', to: 'messages#upload_new'
+        post 'upload'
+      end
+    end
     resources :twitter_accounts
   end
 

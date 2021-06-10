@@ -1,0 +1,17 @@
+- content_for :title
+  | メッセージ - ファイルアップロード
+
+= form_tag '/messages/upload', method: :post, multipart: true do
+  .box
+    .box-header
+    .box-body
+      .form-group
+        = label_tag "file", "ファイル", class: "col-sm-2 control-label"
+        .col-sm-2
+          = file_field_tag :file
+    .box-footer
+      .form-group
+        .col-sm-offset-2.col-sm-5
+          = submit_tag "アップロード", class: "btn btn-info btn-sm"
+
+
