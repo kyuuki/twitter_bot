@@ -81,10 +81,42 @@ class MessagesController < ApplicationController
   
   def upload
     upload_file = params[:file]
-
-    # TODO: 保存処理
     
-    redirect_to messages_url, notice: 'Uploaded.'
+    if upload_file.nil?
+      flash.now[:alert] = "ファイルを選択してください。"
+      render :upload_new
+      return
+    end
+    
+    twitter_account = TwitterAccount.first
+
+    # TODO: トランザクション
+    # TODO: エラー処理
+    
+    # Excel で 1 行目が複数行の CSV を出力するとエラー。どうやっても解消できず。
+    # ヘッダを改行なしで入れるルールにしておく。
+    csv = Roo::CSV.new(upload_file.path,
+                       csv_options: {
+                         headers: true,
+                         skip_blanks: true,
+                       })
+
+    begin
+      ActiveRecord::Base.transaction do
+        delete_all_and_create_from_csv(twitter_account, csv)
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      flash.now[:alert] = "システムでエラーが発生しました。"
+      render :upload_new
+      return
+    rescue CSV::MalformedCSVError => e
+      # CSV 不正
+      flash.now[:alert] = "CSV ファイル読み込みでエラーが発生しました。"
+      render :upload_new
+      return
+    end
+    
+    redirect_to messages_url, notice: 'アップロードが完了しました。'
   end
 
   private
@@ -96,5 +128,27 @@ class MessagesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
       params.require(:message).permit(:twitter_account_id, :category, :post_weekday, :post_time, :text, :from_at, :to_at)
+    end
+
+    def delete_all_and_create_from_csv(twitter_account, csv)
+      # メッセージ全削除
+      # Message.delete_all はよろしくないので下の方法に。
+      # https://qiita.com/hiroki_tanaka/items/9ab7eb532fb71e83ffb6
+      messages = Message.all
+      messages.in_batches.each do |delete_messages|
+        delete_messages.map(&:destroy!)
+        sleep(0.1)
+      end
+
+      csv.each do |row|
+        text = row[0][1]  # headers: true にすると row[0] は ["text(見出し)","..."] みたいな形になる。微妙。。。
+        message = Message.new(
+          twitter_account: twitter_account,
+          category: 3,
+          text: text,
+        )
+        message.set_at_unlimited!
+        message.save!
+      end
     end
 end

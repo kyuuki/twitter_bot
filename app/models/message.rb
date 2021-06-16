@@ -33,6 +33,12 @@ class Message < ApplicationRecord
     end
   end
 
+  # 期間を無制限に
+  def set_at_unlimited!
+    self.from_at = "1970-01-01"
+    self.to_at = "2100-12-31"
+  end
+
   #
   # Twitter 投稿
   #

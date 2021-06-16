@@ -52,7 +52,14 @@
     <div class="content-wrapper">
       <section class="content-header">
         <h3><%= yield(:title) %></h3>
+	
+	<% if flash[:alert] %>
+          <div class="alert alert-danger">
+            <%= flash[:alert] %>	
+          </div>
+	<% end %>
       </section>
+      
       <section class="content container-fluid">
         <%= content_for(:content) ? yield(:content) : yield %>
       </section>

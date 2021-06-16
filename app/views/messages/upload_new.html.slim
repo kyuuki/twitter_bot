@@ -4,14 +4,20 @@
 = form_tag '/messages/upload', method: :post, multipart: true do
   .box
     .box-header
+      .alert.alert-success
+        ul
+          li 1 行目には "text" という文字列を記述してください。1 行目に改行を入れないでください。
+          li 2 行目以降にツイートする内容を記述してください (改行も入れられます)。
+          li Excel で保存をする際は「CSV UTF-8(コンマ区切り)（*.csv）」を指定してください。
     .box-body
       .form-group
         = label_tag "file", "ファイル", class: "col-sm-2 control-label"
         .col-sm-2
           = file_field_tag :file
+    .box-body
     .box-footer
       .form-group
         .col-sm-offset-2.col-sm-5
-          = submit_tag "アップロード", class: "btn btn-info btn-sm"
+          = submit_tag "アップロード", class: "btn btn-info btn-sm", data: { confirm: "現在登録されている全てのメッセージが削除されますがよろしいですか？" }
 
 

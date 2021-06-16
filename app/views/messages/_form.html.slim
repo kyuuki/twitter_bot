@@ -40,7 +40,7 @@
       .form-group
         = form.label :category, "", class: "col-sm-2 control-label"
         .col-sm-2
-          = form.select :category, [["曜日", 1], ["ランダム", 2]], {}, { class: "form-control" }
+          = form.select :category, [["曜日", 1], ["ランダム", 2], ["時刻指定", 3]], {}, { class: "form-control" }
         /.col-sm-2
           /= form.select :category, [["ランダム", 2]], {}, { class: "form-control" }
           = form.hidden_field :category, value: 2

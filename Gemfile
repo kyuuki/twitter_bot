@@ -75,3 +75,6 @@ gem 'twitter'
 # スクレイピング
 gem 'nokogiri'
 
+# CSV など
+gem 'roo'
+
