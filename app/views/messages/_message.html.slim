@@ -3,9 +3,9 @@ tr
   td
     - if (message.category == 1)
       | 曜日
-    - if (message.category == 2)
+    - elsif (message.category == 2)
       | ランダム
-    - if (message.category == 3)
+    - elsif (message.category == 3)
       | 時刻指定
     - else
       | (未定)
