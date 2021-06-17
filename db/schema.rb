@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_27_164626) do
+ActiveRecord::Schema.define(version: 2021_06_17_033620) do
 
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -35,6 +35,14 @@ ActiveRecord::Schema.define(version: 2019_09_27_164626) do
     t.integer "post_weekday"
     t.time "post_time"
     t.index ["twitter_account_id"], name: "index_messages_on_twitter_account_id"
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.integer "category"
+    t.integer "post_weekday"
+    t.time "post_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "twitter_accounts", force: :cascade do |t|

@@ -11,5 +11,14 @@
       <i class="fa fa-link"></i> <span>メッセージ一覧</span>
     <% end %>
   </li>
+  <% if request.path_info == schedules_path %>
+    <li class="active">
+  <% else %>
+    <li>
+  <% end %>
+    <%= link_to schedules_path do %>
+      <i class="fa fa-calendar"></i> <span>スケジュール一覧</span>
+    <% end %>
+  </li>
 </ul>
 <!-- /.sidebar-menu -->

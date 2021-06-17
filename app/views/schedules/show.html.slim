@@ -1,0 +1,15 @@
+p#notice = notice
+
+p
+  strong Category:
+  = @schedule.category
+p
+  strong Post weekday:
+  = @schedule.post_weekday
+p
+  strong Post time:
+  = @schedule.post_time
+
+=> link_to 'Edit', edit_schedule_path(@schedule)
+'|
+=< link_to 'Back', schedules_path

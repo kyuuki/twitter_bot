@@ -1,0 +1,29 @@
+- content_for :title
+  | スケジュール一覧
+
+.box
+  .box-header.with-border
+    .pull-right
+      = link_to new_schedule_path, { class: "btn btn-default btn-sm" } do
+        i.fa.fa-plus
+        | &nbsp; 新規登録
+
+  .box-body.table-responsive
+
+    table.table.table-bordered.table-hover
+      thead
+        tr
+          th.col-sm-1 ID
+          th.col-sm-2 = t('activerecord.attributes.schedule.category')
+          th.col-sm-3 = t('activerecord.attributes.schedule.post_weekday')
+          th.col-sm-3 = t('activerecord.attributes.schedule.post_time')
+          th.col-sm-2
+      tbody
+        == render @schedules
+
+  .box-footer
+    .pull-right
+      = link_to new_schedule_path, { class: "btn btn-default btn-sm" } do
+        i.fa.fa-plus
+        | &nbsp; 新規登録
+

@@ -11,6 +11,7 @@ Rails.application.routes.draw do
         post 'upload'
       end
     end
+    resources :schedules
     resources :twitter_accounts
   end
 

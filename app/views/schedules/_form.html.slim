@@ -1,0 +1,42 @@
+- content_for :js
+  javascript:
+    $('#timepicker1').datetimepicker({
+      format: 'HH:mm',
+      stepping: 10
+    });
+
+= form_for schedule, html: { class: "form-horizontal" } do |form|
+  - if schedule.errors.any?
+      .alert.alert-danger
+        ul
+          - schedule.errors.full_messages.each do |error_message|
+            li = error_message
+
+  .box
+    .box-header.with-border
+      h3.box-title スケジュール
+
+    .box-body
+      .form-group
+        = form.label :category, "", class: "col-sm-2 control-label"
+        .col-sm-2
+          = form.number_field :category, class: "form-control"
+          /= form.select :category, [["曜日", 1], ["ランダム", 2], ["時刻指定", 3]], {}, { class: "form-control" }
+
+      .form-group
+        = form.label :post_weekday, "", class: "col-sm-2 control-label"
+        .col-sm-1
+          = form.select :post_weekday, I18n.t("date.abbr_day_names").map.with_index{ |name, i| [name, i] }.unshift(["", ""]), {}, { class: "form-control" }
+
+      .form-group
+        = form.label :post_time, "", class: "col-sm-2 control-label"
+        .col-sm-3
+          .input-group id="timepicker1" data-target-input="nearest"
+            = form.time_field :post_time, { class: "form-control datetimepicker-input icon-del", "data-target": "#timepicker1" }
+            .input-group-addon data-target="#timepicker1" data-toggle="datetimepicker"
+              i.fa.fa-clock-o
+
+    .box-footer
+      .form-group
+        .col-sm-offset-2.col-sm-5
+          = form.submit class: "btn btn-info btn-sm"
