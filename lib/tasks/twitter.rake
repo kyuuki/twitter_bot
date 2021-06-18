@@ -3,6 +3,63 @@ require 'rss'
 
 namespace :twitter do
   #
+  # スケジュールの曜日、時刻に、特定のカテゴリから 1 つをランダムツイート (10 分おき)
+  #
+  desc "Tweet scheduled message"
+  task :scheduled_post_random, [ 'category' ] => :environment do |task, args|
+    Rails.logger = Logger.new(STDOUT)
+    Rails.logger.info "Task #{task.name} start."
+
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    Rails.logger.level = Logger::DEBUG
+    
+    now = Time.current
+    Rails.logger.info "time = #{now}"
+    Rails.logger.info "wday = #{now.wday}"
+
+    # カテゴリ
+    category = args.category.to_i
+    Rails.logger.info "category = #{category}"
+    
+    # 現在時刻から取り出したい時刻を取得
+    h = now.utc.hour
+    m = (now.utc.min / 10) * 10  # 1 分単位切り捨て (34 → 30, 29 → 20)
+    post_time = "%02d%02d00" % [h, m]
+    Rails.logger.info "post_time = #{post_time}"
+
+    # スケジュール特定
+    # 曜日と時刻でしぼる
+    schedules = Schedule
+                 .where(category: category, post_weekday: [now.wday, nil])
+                 #.where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
+                 #.where("time(post_time) = :time", { time: post_time })  # SQLite3 (間違ってる)
+                 .where("strftime('%H%M%S', post_time) = :time", { time: post_time })  # SQLite3
+
+    if (schedules.size == 0)
+      Rails.logger.info "There is no schedule."
+      Rails.logger.info "Task #{task.name} failed."
+      next
+    end
+
+    #
+    # スケジュールが存在すれば、対象のカテゴリから 1 つランダムにツイート
+    #
+    
+    # ツイート取得
+    messages = Message.where(category: category)
+    
+    if (messages.size == 0)
+      Rails.logger.info "There is no category message."
+      Rails.logger.fatal "Task #{task.name} failed."
+      next
+    end
+
+    # ランダムに 1 つ送信
+    message = messages[rand(messages.size)]
+    message.post
+  end
+    
+  #
   # 特定の曜日、時刻にメッセージをツイート (10 分おき)
   #
   desc "Tweet a weekday time message"
