@@ -40,14 +40,14 @@
       .form-group
         = form.label :category, "", class: "col-sm-2 control-label"
         .col-sm-2
-          = form.select :category, [["曜日", 1], ["ランダム", 2], ["時刻指定", 3]], {}, { class: "form-control" }
+          = form.select :category, [["曜日", 1], ["ランダム", 2], ["スケジュール", 3]], {}, { class: "form-control" }
         /.col-sm-2
           /= form.select :category, [["ランダム", 2]], {}, { class: "form-control" }
           = form.hidden_field :category, value: 2
       .form-group
         = form.label :post_weekday, "", class: "col-sm-2 control-label"
         .col-sm-1
-          = form.select :post_weekday, I18n.t("date.abbr_day_names").map.with_index{ |name, i| [name, i] }, {}, { class: "form-control" }
+          = form.select :post_weekday, I18n.t("date.abbr_day_names").map.with_index{ |name, i| [name, i] }.unshift(["", ""]), {}, { class: "form-control" }
       .form-group
         = form.label :post_time, "", class: "col-sm-2 control-label"
         .col-sm-3
