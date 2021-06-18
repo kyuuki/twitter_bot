@@ -3,7 +3,7 @@
 #
 module TwitterUtil
   #
-  # 投稿に失敗しても
+  # 投稿に失敗したら例外発生
   #
   def self.post(message, consumer_key, consumer_secret, access_token, access_token_secret)
     client = Twitter::REST::Client.new do |config|

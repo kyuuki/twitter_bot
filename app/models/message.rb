@@ -9,6 +9,10 @@ class Message < ApplicationRecord
     validates :post_time, presence: true
   end
 
+  # 有効かどうかは 10 分ごとの値でなくリアルタイムの現在時刻をベースにする。
+  scope :valid, ->(now) { where("from_at <= :now AND :now < to_at", { now: now }) }
+  scope :valid_category, ->(now, category) { valid(now).where(category: category) }
+
   def category_is_week?
     self.category == 1
   end

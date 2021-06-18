@@ -1,18 +1,60 @@
 require 'twitter'
 require 'rss'
 
+# TODO: メソッドを別クラスに移動する？
+
+def setup_logger
+  Rails.logger = Logger.new(STDOUT)
+  Rails.logger.level = Logger::DEBUG
+  
+  ActiveRecord::Base.logger = Logger.new(STDOUT)
+end
+
+#
+# 現在時刻から投稿時刻を取得 (10 分単位)
+#
+# - 12:34 → 123000
+# - 14:29 → 142000
+#
+def get_post_time_from_now(now)
+    h = now.utc.hour
+    m = (now.utc.min / 10) * 10  # 1 分単位切り捨て (34 → 30, 29 → 20)
+    post_time = "%02d%02d00" % [h, m]
+
+    return post_time
+end
+
+#
+# 特定のカテゴリの有効なメッセージをランダムで 1 つツイート (メッセージの曜日や投稿時刻は参照しない)
+#
+# 戻り値: ツイート数
+#
+def post_random_category(now, category)
+    # ツイート取得
+    messages = Message.valid_category(now, category)
+    
+    if (messages.size == 0)
+      return 0
+    end
+
+    # ランダムに 1 つ送信
+    message = messages[rand(messages.size)]
+    message.post
+
+    return 1
+end
+
 namespace :twitter do
   #
   # スケジュールの曜日、時刻に、特定のカテゴリから 1 つをランダムツイート (10 分おき)
   #
   desc "Tweet scheduled message"
   task :scheduled_post_random, [ 'category' ] => :environment do |task, args|
-    Rails.logger = Logger.new(STDOUT)
+    setup_logger
+    
     Rails.logger.info "Task #{task.name} start."
 
-    ActiveRecord::Base.logger = Logger.new(STDOUT)
-    Rails.logger.level = Logger::DEBUG
-    
+    # 現在時刻
     now = Time.current
     Rails.logger.info "time = #{now}"
     Rails.logger.info "wday = #{now.wday}"
@@ -22,9 +64,7 @@ namespace :twitter do
     Rails.logger.info "category = #{category}"
     
     # 現在時刻から取り出したい時刻を取得
-    h = now.utc.hour
-    m = (now.utc.min / 10) * 10  # 1 分単位切り捨て (34 → 30, 29 → 20)
-    post_time = "%02d%02d00" % [h, m]
+    post_time = get_post_time_from_now(now)
     Rails.logger.info "post_time = #{post_time}"
 
     # スケジュール特定
@@ -44,19 +84,13 @@ namespace :twitter do
     #
     # スケジュールが存在すれば、対象のカテゴリから 1 つランダムにツイート
     #
-    
-    # ツイート取得
-    messages = Message.where(category: category)
-    
-    if (messages.size == 0)
+    if (post_random_category(now, category) == 0)
       Rails.logger.info "There is no category message."
-      Rails.logger.fatal "Task #{task.name} failed."
+      Rails.logger.info "Task #{task.name} failed."
       next
     end
-
-    # ランダムに 1 つ送信
-    message = messages[rand(messages.size)]
-    message.post
+    
+    Rails.logger.info "Task #{task.name} end."
   end
     
   #
@@ -70,6 +104,7 @@ namespace :twitter do
     ActiveRecord::Base.logger = Logger.new(STDOUT)
     Rails.logger.level = Logger::DEBUG
 
+    # 現在時刻
     now = Time.current
     Rails.logger.info "time = #{now}"
     Rails.logger.info "wday = #{now.wday}"
@@ -115,40 +150,33 @@ namespace :twitter do
   #
   desc "Tweet a category random message"
   task :post_random, [ 'category' ] => :environment do |task, args|
-    Rails.logger = Logger.new(STDOUT)
+    setup_logger
+
     Rails.logger.info "Task #{task.name} start."
 
-    ActiveRecord::Base.logger = Logger.new(STDOUT)
-    Rails.logger.level = Logger::DEBUG
+    # 現在時刻
+    now = Time.current
+    Rails.logger.info "time = #{now}"
+    Rails.logger.info "wday = #{now.wday}"
 
     # カテゴリ
     category = args.category.to_i
     Rails.logger.info "category = #{category}"
 
-    # Twitter アカウント
-    twitter = TwitterAccount.first
-    Rails.logger.info "twitter_account = #{twitter.account}"
-
-    # ツイート取得
-    messages = Message
-                 .where(twitter_account: twitter, category: category)
-                 .where("from_at <= :now AND :now < to_at", { now: Time.zone.now })
-
-    if (messages.size == 0)
+    #
+    # 対象のカテゴリから 1 つランダムにツイート
+    #
+    if (post_random_category(now, category) == 0)
       Rails.logger.info "There is no category message."
-      Rails.logger.fatal "Task #{task.name} failed."
+      Rails.logger.info "Task #{task.name} failed."
       next
     end
-
-    # 送信
-    message = messages[rand(messages.size)]
-    message.post
-
+    
     Rails.logger.info "Task #{task.name} end."
   end
 
   #
-  # 特定のカテゴリメッセージをツイート
+  # 特定のカテゴリメッセージをツイート (最初に一つ)
   #
   desc "Tweet a category message"
   task :post, [ 'category' ] => :environment do |task, args|
