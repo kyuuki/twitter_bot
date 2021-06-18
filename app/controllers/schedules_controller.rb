@@ -4,10 +4,10 @@ class SchedulesController < ApplicationController
   # GET /schedules or /schedules.json
   def index
     #@schedules = Schedule.all.order(:post_time)
+    # ↓PostgreSQL 専用
+    @schedules = Schedule.all.order("post_time AT TIME ZONE 'Japan'")
     # ↓SQLite 専用
-    @schedules = Schedule.all.order("time(post_time, '+9 hours')")
-    # ↓SQLite 専用
-    #@schedules = Schedule.all.order("post_time AT TIME ZONE 'Japan'")
+    #@schedules = Schedule.all.order("time(post_time, '+9 hours')")
   end
 
   # GET /schedules/1 or /schedules/1.json

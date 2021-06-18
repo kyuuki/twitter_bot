@@ -71,9 +71,9 @@ namespace :twitter do
     # 曜日と時刻でしぼる
     schedules = Schedule
                  .where(category: category, post_weekday: [now.wday, nil])
-                 #.where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
-                 #.where("time(post_time) = :time", { time: post_time })  # SQLite3 (間違ってる)
-                 .where("strftime('%H%M%S', post_time) = :time", { time: post_time })  # SQLite3
+                 .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
+                 #.where("strftime('%H%M%S', post_time) = :time", { time: post_time })  # SQLite3
+                 #.where("time(post_time) = :time", { time: post_time })  # SQLite3 (そもそも間違ってる？)
 
     if (schedules.size == 0)
       Rails.logger.info "There is no schedule."
