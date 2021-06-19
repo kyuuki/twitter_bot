@@ -21,8 +21,7 @@ class MessagesController < ApplicationController
   def new
     @message = Message.new
     @message.twitter_account = TwitterAccount.first
-    #@message.from_at = "0000-01-01"
-    #@message.to_at = "9999-01-01"
+    @message.set_at_unlimited!
   end
 
   # GET /messages/1/edit
