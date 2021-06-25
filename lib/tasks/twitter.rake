@@ -17,31 +17,69 @@ end
 # - 14:29 → 142000
 #
 def get_post_time_from_now(now)
-    h = now.utc.hour
-    m = (now.utc.min / 10) * 10  # 1 分単位切り捨て (34 → 30, 29 → 20)
-    post_time = "%02d%02d00" % [h, m]
+  h = now.utc.hour
+  m = (now.utc.min / 10) * 10  # 1 分単位切り捨て (34 → 30, 29 → 20)
+  post_time = "%02d%02d00" % [h, m]
 
-    return post_time
+  return post_time
 end
 
 #
-# 特定のカテゴリの有効なメッセージをランダムで 1 つツイート (メッセージの曜日や投稿時刻は参照しない)
+# 特定のカテゴリの有効なメッセージをランダムで 1 つツイート
+# (メッセージの曜日や投稿時刻は参照しない)
 #
-# 戻り値: ツイート数
+# 戻り値: ツイートしたメッセージ
 #
 def post_random_category(now, category)
-    # ツイート取得
-    messages = Message.valid_category(now, category)
+  # ツイート取得
+  messages = Message.valid_category(now, category)
     
-    if (messages.size == 0)
-      return 0
-    end
+  if (messages.size == 0)
+    Rails.logger.info "There is no category message."
+    return nil
+  end
 
-    # ランダムに 1 つ送信
-    message = messages[rand(messages.size)]
-    message.post
+  # ランダムに 1 つ送信
+  message = messages[rand(messages.size)]
+  message.post
 
-    return 1
+  return message
+end
+
+#
+# スケジュールに則って特定の有効なメッセージをランダムで 1 つツイート
+# (メッセージの曜日や投稿時刻は参照しない)
+#
+# 戻り値: ツイートしたメッセージ
+#
+def post_random_category_by_schedule(now, category)
+  # 現在時刻から取り出したい時刻を取得
+  post_time = get_post_time_from_now(now)
+  Rails.logger.info "post_time = #{post_time}"
+
+  # スケジュール特定
+  # 曜日と時刻でしぼる
+  schedules = Schedule
+                .where(category: category, post_weekday: [now.wday, nil])
+                # TODO: DB に依存する部分を一カ所にまとめたい。
+                .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
+                #.where("strftime('%H%M%S', post_time) = :time", { time: post_time })  # SQLite3
+  
+  if (schedules.size == 0)
+    Rails.logger.info "There is no schedule."
+    return nil
+  end
+
+  #
+  # スケジュールが存在すれば、対象のカテゴリから 1 つランダムにツイート
+  #
+  message = post_random_category(now, category)
+  if (message == nil)
+    Rails.logger.info "Post error."
+    return nil
+  end
+
+  return message
 end
 
 namespace :twitter do
@@ -62,37 +100,46 @@ namespace :twitter do
     # カテゴリ
     category = args.category.to_i
     Rails.logger.info "category = #{category}"
-    
-    # 現在時刻から取り出したい時刻を取得
-    post_time = get_post_time_from_now(now)
-    Rails.logger.info "post_time = #{post_time}"
 
-    # スケジュール特定
-    # 曜日と時刻でしぼる
-    schedules = Schedule
-                 .where(category: category, post_weekday: [now.wday, nil])
-                 .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
-                 #.where("strftime('%H%M%S', post_time) = :time", { time: post_time })  # SQLite3
-                 #.where("time(post_time) = :time", { time: post_time })  # SQLite3 (そもそも間違ってる？)
-
-    if (schedules.size == 0)
-      Rails.logger.info "There is no schedule."
-      Rails.logger.info "Task #{task.name} failed."
-      next
-    end
-
-    #
-    # スケジュールが存在すれば、対象のカテゴリから 1 つランダムにツイート
-    #
-    if (post_random_category(now, category) == 0)
-      Rails.logger.info "There is no category message."
+    message = post_random_category_by_schedule(now, category)
+    if (message == nil)
       Rails.logger.info "Task #{task.name} failed."
       next
     end
     
     Rails.logger.info "Task #{task.name} end."
   end
+
+  #
+  # スケジュールの曜日、時刻に、特定のカテゴリから 1 つをランダムツイートして削除 (10 分おき)
+  #
+  desc "Tweet scheduled message and delete"
+  task :scheduled_post_and_delete_random, [ 'category' ] => :environment do |task, args|
+    setup_logger
     
+    Rails.logger.info "Task #{task.name} start."
+
+    # 現在時刻
+    now = Time.current
+    Rails.logger.info "time = #{now}"
+    Rails.logger.info "wday = #{now.wday}"
+
+    # カテゴリ
+    category = args.category.to_i
+    Rails.logger.info "category = #{category}"
+    
+    message = post_random_category_by_schedule(now, category)
+    if (message == nil)
+      Rails.logger.info "Task #{task.name} failed."
+      next
+    end
+
+    # ツイートが成功したら削除
+    message.destroy
+    
+    Rails.logger.info "Task #{task.name} end."
+  end
+  
   #
   # 特定の曜日、時刻にメッセージをツイート (10 分おき)
   #
@@ -166,7 +213,7 @@ namespace :twitter do
     #
     # 対象のカテゴリから 1 つランダムにツイート
     #
-    if (post_random_category(now, category) == 0)
+    if (post_random_category(now, category) == nil)
       Rails.logger.info "There is no category message."
       Rails.logger.info "Task #{task.name} failed."
       next
