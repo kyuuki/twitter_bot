@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 2021_06_17_033620) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -31,7 +34,7 @@ ActiveRecord::Schema.define(version: 2021_06_17_033620) do
     t.datetime "to_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "twitter_account_id"
+    t.bigint "twitter_account_id"
     t.integer "post_weekday"
     t.time "post_time"
     t.index ["twitter_account_id"], name: "index_messages_on_twitter_account_id"
@@ -55,4 +58,5 @@ ActiveRecord::Schema.define(version: 2021_06_17_033620) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "messages", "twitter_accounts"
 end
