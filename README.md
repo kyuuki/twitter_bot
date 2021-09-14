@@ -81,13 +81,13 @@ $ heroku run rake db:migrate
 
 ### Rake タスク
 
-#### カテゴリ指定投稿
+#### 単純投稿
 
 ```sh
-$ rails twitter:post[<category>]
+$ rails twitter:post_first[<category>]
 ```
 
-カテゴリのメッセージの中から 1 つ選んでツイート。  
+特定のカテゴリのメッセージを一つだけ投稿する。  
 ※メッセージにある曜日、投稿時間は無視。  
 ※スケジュールは無視。
 

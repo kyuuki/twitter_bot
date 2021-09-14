@@ -1,14 +1,6 @@
 require 'twitter'
 require 'rss'
-
-# TODO: メソッドを別クラスに移動する？
-
-def setup_logger
-  Rails.logger = Logger.new(STDOUT)
-  Rails.logger.level = Logger::DEBUG
-  
-  ActiveRecord::Base.logger = Logger.new(STDOUT)
-end
+require "./lib/tasks/task_util"
 
 #
 # 現在時刻から投稿時刻を取得 (10 分単位)
@@ -82,14 +74,65 @@ def post_random_category_by_schedule(now, category)
   return message
 end
 
+#
+# Twitter 関連タスク
+#
 namespace :twitter do
+  include TaskUtil
+
+  #
+  # 単純投稿 (該当カテゴリの最初の一つのみ)
+  #
+  desc "Simple tweet"
+  task :post_first, [ 'category' ] => :environment do |task, args|
+    setup_logger
+
+    Rails.logger.info "Task #{task.name} start."
+
+    # 現在時刻
+    now = Time.current
+    Rails.logger.info "time = #{now}"
+    Rails.logger.info "wday = #{now.wday}"
+
+    # カテゴリ
+    category = args.category.to_i
+    Rails.logger.info "category = #{category}"
+
+    # ツイート取得
+    messages = Message.valid_category(now, category)
+
+    if (messages.size < 1)
+      Rails.logger.error "There is no message."  # 手動なのでエラーにしておく
+      Rails.logger.error "Task #{task.name} failed."
+      next
+    end
+
+    # ランダムに 1 つ送信
+    message = messages.first
+
+    # TODO: 例外処理をどうするか？例外の種類と何をしたいかを明確に
+    begin
+      message.post
+    rescue => exception
+      # TODO: ここら辺のエラーメッセージが被っている
+      Rails.logger.info "Message post error."
+      Rails.logger.info "message = #{message.text}"  # TODO: 下で出すべき？
+      Rails.logger.info exception.message
+      Rails.logger.error "Task #{task.name} failed."
+      next
+      # raise exception  # タスク的には想定通りのエラーなので例外は上げない
+    end
+
+    Rails.logger.info "Task #{task.name} end."
+  end
+
   #
   # スケジュールの曜日、時刻に、特定のカテゴリから 1 つをランダムツイート (10 分おき)
   #
   desc "Tweet scheduled message"
   task :scheduled_post_random, [ 'category' ] => :environment do |task, args|
     setup_logger
-    
+
     Rails.logger.info "Task #{task.name} start."
 
     # 現在時刻
