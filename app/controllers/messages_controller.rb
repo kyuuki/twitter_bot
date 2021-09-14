@@ -4,11 +4,11 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @messages = Message.order(:category, :post_weekday, :id)
+    #@messages = Message.order(:category, :post_weekday, :id)
     # ↓SQLite 専用
     #@messages = Message.order(:category, :post_weekday).order("time(post_time, '+9 hours')")
     # ↓PostgreSQL 専用
-    #@messages = Message.order(:category, :post_weekday).order("post_time AT TIME ZONE 'Japan'").order(:text)
+    @messages = Message.order(:category, :post_weekday).order("post_time AT TIME ZONE 'Japan'").order(:id)
     @messages.map {|message| message.to_view!}
   end
 
@@ -42,6 +42,8 @@ class MessagesController < ApplicationController
         format.html { redirect_to messages_url, notice: 'Message was successfully created.' }
         format.json { render :show, status: :created, location: @message }
       else
+        @message.to_view!
+
         format.html { render :new }
         format.json { render json: @message.errors, status: :unprocessable_entity }
       end
@@ -60,6 +62,8 @@ class MessagesController < ApplicationController
         format.html { redirect_to messages_url, notice: 'Message was successfully updated.' }
         format.json { render :show, status: :ok, location: @message }
       else
+        @message.to_view!
+
         format.html { render :edit }
         format.json { render json: @message.errors, status: :unprocessable_entity }
       end

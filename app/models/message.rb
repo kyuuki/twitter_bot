@@ -1,4 +1,7 @@
 class Message < ApplicationRecord
+  UNLIMITED_FORM_AT = Time.zone.parse('1970-01-01 00:00:00')
+  UNLIMITED_TO_AT = Time.zone.parse('2101-01-01 00:00:00')
+
   belongs_to :twitter_account
 
   validates :from_at, presence: true
@@ -20,13 +23,29 @@ class Message < ApplicationRecord
   # 表示用のモデルに変更
   # - 終了日時を前の日の 00:00 にする
   def to_view!
-    self.to_at = self.to_at.yesterday unless self.to_at.nil?
+    if self.from_at == UNLIMITED_FORM_AT
+      self.from_at = nil
+    end
+
+    if self.to_at == UNLIMITED_TO_AT
+      self.to_at = nil
+    else
+      self.to_at = self.to_at.yesterday
+    end
   end
 
   # 表示用のモデルから実際のモデルに戻す
   # - 終了日時を次の日の 00:00 にする
   def from_view!
-    self.to_at = self.to_at.tomorrow unless self.to_at.nil?
+    if self.from_at.nil?
+      self.from_at = UNLIMITED_FORM_AT
+    end
+
+    if self.to_at.nil?
+      self.to_at = UNLIMITED_TO_AT
+    else
+      self.to_at = self.to_at.tomorrow
+    end
   end
 
   # カテゴリが曜日とランダム用
@@ -39,8 +58,8 @@ class Message < ApplicationRecord
 
   # 期間を無制限に
   def set_at_unlimited!
-    self.from_at = "1970-01-01"
-    self.to_at = "2100-12-31"
+    self.from_at = UNLIMITED_FORM_AT
+    self.to_at = UNLIMITED_TO_AT
   end
 
   #

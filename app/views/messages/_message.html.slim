@@ -13,8 +13,8 @@ tr
   td = I18n.t("date.abbr_day_names")[message.post_weekday] unless message.post_weekday.nil?
   td = message.post_time.strftime("%H:%M") unless message.post_time.nil?
   td = message.text
-  td = l(message.from_at, format: :date)
-  td = l(message.to_at, format: :date)
+  td = message.from_at.nil? ? "" : l(message.from_at, format: :date)
+  td = message.to_at.nil? ? "" : l(message.to_at, format: :date)
   td.text-right
     = link_to "編集", edit_message_path(message), { class: "btn btn-default btn-sm" }
     | &nbsp;
