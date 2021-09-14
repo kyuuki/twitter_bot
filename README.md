@@ -25,8 +25,8 @@ Twitter に自動的に投稿するだけのボット。
 
 ## Demo
 
-* [Heroku](https://kyuuki-twitter-bot.herokuapp.com)  
-  メールアドレス: xxx, パスワード: xxx
+* [Heroku](https://kyuuki-twitter-bot-demo.herokuapp.com)  
+  メールアドレス: bot@example.com, パスワード: twitter
 
 ## Getting started
 
@@ -44,7 +44,7 @@ $ rails db:migrate
 
 ```sh
 $ rails c
-> AdminUser.create(email: "xxx@example.com", password: "xxxxxx")
+> AdminUser.create(email: "bot@example.com", password: "twitter")
 ```
 
 ### Rails サーバー起動
@@ -58,7 +58,7 @@ $ rails s -b 0.0.0.0
 Heroku にデプロイ
 
 ```sh
-$ heroku create kyuuki-sample-twitter-bot
+$ heroku create kyuuki-twitter-bot-demo
 $ git push heroku master
 $ heroku run rake db:migrate
 ```
