@@ -13,11 +13,11 @@
     table.table.table-bordered.table-hover
       thead
         tr
-          th.col-sm-1 ID
-          th.col-sm-2 = t('activerecord.attributes.schedule.category')
-          th.col-sm-3 = t('activerecord.attributes.schedule.post_weekday')
-          th.col-sm-3 = t('activerecord.attributes.schedule.post_time')
-          th.col-sm-2
+          /th.col-sm-1 ID
+          /th.col-sm-2 = t('activerecord.attributes.schedule.category')
+          th = t('activerecord.attributes.schedule.post_weekday')
+          th = t('activerecord.attributes.schedule.post_time')
+          th style="width: 140px;" アクション
       tbody
         == render @schedules
 

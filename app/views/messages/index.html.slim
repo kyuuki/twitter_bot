@@ -8,7 +8,7 @@
         i.fa.fa-plus
         | &nbsp; 新規登録
       | &nbsp;
-      = link_to upload_new_messages_path, { class: "btn btn-default btn-sm" } do
+      /= link_to upload_new_messages_path, { class: "btn btn-default btn-sm" } do
         i.fa.fa-upload
         | &nbsp; ファイルアップロード
 
@@ -17,14 +17,14 @@
     table.table.table-bordered.table-hover
       thead
         tr
-          th style="width: 10px;" ID
-          th.col-sm-1 = t('activerecord.attributes.message.twitter_account_id')
-          th.col-sm-1 = t('activerecord.attributes.message.category')
-          th = t('activerecord.attributes.message.post_weekday')
-          th = t('activerecord.attributes.message.post_time')
-          th.col-sm-5 = t('activerecord.attributes.message.text')
-          th = t('activerecord.attributes.message.from_at')
-          th = t('activerecord.attributes.message.to_at')
+          /th style="width: 10px;" ID
+          /th.col-sm-1 = t('activerecord.attributes.message.twitter_account_id')
+          /th.col-sm-1 = t('activerecord.attributes.message.category')
+          /th = t('activerecord.attributes.message.post_weekday')
+          /th = t('activerecord.attributes.message.post_time')
+          th = t('activerecord.attributes.message.text')
+          th.col-sm-2 = t('activerecord.attributes.message.from_at')
+          th.col-sm-2 = t('activerecord.attributes.message.to_at')
           th style="width: 140px;" アクション
       tbody
         == render @messages
@@ -35,6 +35,6 @@
         i.fa.fa-plus
         | &nbsp; 新規登録
       | &nbsp;
-      = link_to upload_new_messages_path, { class: "btn btn-default btn-sm" } do
+      /= link_to upload_new_messages_path, { class: "btn btn-default btn-sm" } do
         i.fa.fa-upload
         | &nbsp; ファイルアップロード
