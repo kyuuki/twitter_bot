@@ -66,10 +66,6 @@ def post_random_category_by_schedule(now, category)
   # スケジュールが存在すれば、対象のカテゴリから 1 つランダムにツイート
   #
   message = post_random_category(now, category)
-  if (message == nil)
-    Rails.logger.info "Post error."
-    return nil
-  end
 
   return message
 end
@@ -127,9 +123,9 @@ namespace :twitter do
   end
 
   #
-  # スケジュールの曜日、時刻に、特定のカテゴリから 1 つをランダムツイート (10 分おき)
+  # スケジュールランダム投稿
   #
-  desc "Tweet scheduled message"
+  desc "Scheduled random tweet"
   task :scheduled_post_random, [ 'category' ] => :environment do |task, args|
     setup_logger
 
@@ -144,14 +140,25 @@ namespace :twitter do
     category = args.category.to_i
     Rails.logger.info "category = #{category}"
 
-    message = post_random_category_by_schedule(now, category)
-    if (message == nil)
-      Rails.logger.info "Task #{task.name} failed."
+    #
+    # ツイート取得 & 投稿
+    #
+    # TODO: 例外処理をどうするか？例外の種類と何をしたいかを明確に
+    begin
+      # ツイートしない場合は下でログを出力し、ここでは何もしない
+      post_random_category_by_schedule(now, category)
+    rescue => exception
+      # TODO: ここら辺のエラーメッセージが被っている
+      Rails.logger.info "Message post error."
+      Rails.logger.info exception.message
+      Rails.logger.error "Task #{task.name} failed."
       next
     end
-    
+
     Rails.logger.info "Task #{task.name} end."
   end
+
+
 
   #
   # スケジュールの曜日、時刻に、特定のカテゴリから 1 つをランダムツイートして削除 (10 分おき)
