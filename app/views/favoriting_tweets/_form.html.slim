@@ -1,0 +1,33 @@
+= form_for @favoriting_tweet do |f|
+  - if @favoriting_tweet.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@favoriting_tweet.errors.count, 'error')} prohibited this favoriting_tweet from being saved:"
+      ul
+        - @favoriting_tweet.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    = f.label :identifier
+    = f.text_field :identifier
+  .field
+    = f.label :text
+    = f.text_area :text
+  .field
+    = f.label :uri
+    = f.text_field :uri
+  .field
+    = f.label :user_screen_name
+    = f.text_field :user_screen_name
+  .field
+    = f.label :user_uri
+    = f.text_field :user_uri
+  .field
+    = f.label :user_profile_image_url
+    = f.text_field :user_profile_image_url
+  .field
+    = f.label :tweeted_at
+    = f.datetime_select :tweeted_at
+  .field
+    = f.label :favorited
+    = f.check_box :favorited
+  .actions = f.submit

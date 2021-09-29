@@ -20,5 +20,23 @@
       <i class="fa fa-calendar"></i> <span>スケジュール一覧</span>
     <% end %>
   </li>
+  <% if request.path_info == favoriting_tweets_path %>
+    <li class="active">
+  <% else %>
+    <li>
+  <% end %>
+    <%= link_to favoriting_tweets_path do %>
+      <i class="fa fa-calendar"></i> <span>お気に入りツイート一覧</span>
+    <% end %>
+  </li>
+  <% if request.path_info == twitter_accounts_path %>
+    <li class="active">
+  <% else %>
+    <li>
+  <% end %>
+    <%= link_to twitter_accounts_path do %>
+      <i class="fa fa-calendar"></i> <span>アカウント一覧</span>
+    <% end %>
+  </li>
 </ul>
 <!-- /.sidebar-menu -->

@@ -1,0 +1,22 @@
+- content_for :title
+  | お気に入り対象ツイート一覧
+
+.box
+
+  .box-body.table-responsive
+
+    table.table.table-bordered.table-hover
+      thead
+        tr
+          th = FavoritingTweet.human_attribute_name(:identifier)
+          th.col-sm-5 = FavoritingTweet.human_attribute_name(:text)
+          th = FavoritingTweet.human_attribute_name(:user_screen_name)
+          th = FavoritingTweet.human_attribute_name(:user_profile_image_url)
+          th = FavoritingTweet.human_attribute_name(:tweeted_at)
+          th = FavoritingTweet.human_attribute_name(:favorited)
+          th style="width: 140px;" アクション
+      tbody
+        == render @favoriting_tweets
+
+  .box-footer
+    /= link_to 'New Favoriting tweet', new_favoriting_tweet_path

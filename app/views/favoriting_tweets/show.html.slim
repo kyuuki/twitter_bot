@@ -1,0 +1,37 @@
+p#notice = notice
+
+p
+  strong Identifier:
+  = @favoriting_tweet.identifier
+
+p
+  strong Text:
+  = @favoriting_tweet.text
+
+p
+  strong Uri:
+  = @favoriting_tweet.uri
+
+p
+  strong User screen name:
+  = @favoriting_tweet.user_screen_name
+
+p
+  strong User uri:
+  = @favoriting_tweet.user_uri
+
+p
+  strong User profile image url:
+  = @favoriting_tweet.user_profile_image_url
+
+p
+  strong Tweet at:
+  = @favoriting_tweet.tweet_at
+
+p
+  strong Favorited:
+  = @favoriting_tweet.favorited
+
+=> link_to 'Edit', edit_favoriting_tweet_path(@favoriting_tweet)
+'|
+=< link_to 'Back', favoriting_tweets_path

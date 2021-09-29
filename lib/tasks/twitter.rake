@@ -158,6 +158,22 @@ namespace :twitter do
     Rails.logger.info "Task #{task.name} end."
   end
 
+  #
+  # お気に入り対象のツイートを保存
+  #
+  desc "Get favorite targets"
+  task get_favorite_target: :environment do |task|
+    setup_logger
+
+    Rails.logger.info "Task #{task.name} start."
+
+    now = Time.current
+
+    # TODO: 管理画面から変更できるように
+    FavoritingTweet.get_and_save_target_tweets("漢検準1級", now)
+
+    Rails.logger.info "Task #{task.name} end."
+  end
 
 
   #

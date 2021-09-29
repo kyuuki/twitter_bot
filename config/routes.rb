@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       end
     end
     resources :schedules
+    resources :favoriting_tweets
     resources :twitter_accounts
   end
 

@@ -10,6 +10,7 @@ ja:
     models:
       message: メッセージ
       schedule: スケジュール
+      favoriting_tweet: お気に入り対象ツイート
     attributes:
       message:
         twitter_account_id: Twitter アカウント
@@ -23,6 +24,13 @@ ja:
         category: カテゴリ
         post_weekday: 投稿曜日
         post_time: 投稿時刻
+      favoriting_tweet:
+        identifier: Twitter ID
+        text: テキスト
+        user_screen_name: ユーザー名
+        user_profile_image_url: ユーザー画像
+        tweeted_at: ツイート時刻
+        favorited: お気に入り済
       admin_user:
         email: メールアドレス
         password: パスワード

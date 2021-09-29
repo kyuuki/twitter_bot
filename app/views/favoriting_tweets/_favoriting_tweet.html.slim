@@ -1,0 +1,15 @@
+tr
+  td = link_to favoriting_tweet.identifier, favoriting_tweet.uri, target: "_blank"
+  td = favoriting_tweet.text
+  td = link_to favoriting_tweet.user_screen_name, favoriting_tweet.user_uri, target: "_blank"
+  td
+    = link_to favoriting_tweet.user_uri, target: "_blank"
+      = image_tag(favoriting_tweet.user_profile_image_url)
+  td = l(favoriting_tweet.tweeted_at, format: :long)
+  td
+    - if favoriting_tweet.favorited
+      | 済
+  td.text-right
+    = link_to '編集', edit_favoriting_tweet_path(favoriting_tweet), { class: "btn btn-default btn-sm" }
+    | &nbsp;
+    = link_to '削除', favoriting_tweet, data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-default btn-sm"
