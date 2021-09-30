@@ -170,7 +170,14 @@ namespace :twitter do
     now = Time.current
 
     # TODO: 管理画面から変更できるように
-    FavoritingTweet.get_and_save_target_tweets("漢検準1級", now)
+    config = Config.find_by(key: "favorite_tweets.keyword")
+    if config.nil?
+      Rails.logger.fatal "There is no keyword."
+      Rails.logger.fatal "Task #{task.name} failed."
+      next
+    end
+
+    FavoritingTweet.get_and_save_target_tweets(config.value, now)
 
     Rails.logger.info "Task #{task.name} end."
   end

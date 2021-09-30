@@ -1,0 +1,23 @@
+h1 Listing configs
+
+table
+  thead
+    tr
+      th Key
+      th Value
+      th
+      th
+      th
+
+  tbody
+    - @configs.each do |config|
+      tr
+        td = config.key
+        td = config.value
+        td = link_to 'Show', config
+        td = link_to 'Edit', edit_config_path(config)
+        td = link_to 'Destroy', config, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Config', new_config_path

@@ -56,6 +56,24 @@ class FavoritingTweetsController < ApplicationController
     end
   end
 
+  #
+  # 検索キーワード
+  #
+  def keyword
+    @config = Config.find_or_create_by!(key: "favorite_tweets.keyword")
+  end
+
+  def keyword_update
+    # 作成されてないことはないはずだが念のため
+    config = Config.find_or_create_by!(key: "favorite_tweets.keyword")
+
+    # 簡易エラー処理
+    config.update!(params.require(:config).permit(:value))
+
+    redirect_to({ action: :keyword }, notice: "更新しました。")
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_favoriting_tweet

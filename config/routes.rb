@@ -12,8 +12,14 @@ Rails.application.routes.draw do
       end
     end
     resources :schedules
-    resources :favoriting_tweets
+    resources :favoriting_tweets do
+      collection do
+        get 'keyword'
+        patch 'keyword', to: 'favoriting_tweets#keyword_update'
+      end
+    end
     resources :twitter_accounts
+    resources :configs
   end
 
   # ログイン機能

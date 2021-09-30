@@ -1,0 +1,23 @@
+- content_for :title
+  | お気に入り対象ツイート
+
+= form_with model: @config, url: { controller: "favoriting_tweets", action: "keyword_update" }, html: { class: "form-horizontal" }, local: true do |form|
+  .box
+    .box-header
+
+    .box-body
+      /.form-group
+        = form.label :key, "", class: "col-sm-2 control-label"
+        .col-sm-2
+          = form.text_field :key, class: "form-control"
+      = form.hidden_field :key
+      .form-group
+        = form.label "検索キーワード", class: "col-sm-2 control-label"
+        .col-sm-8
+          = form.text_field :value, class: "form-control"
+
+    .box-footer
+      .form-group
+        .col-sm-offset-2.col-sm-5
+          = form.submit class: "btn btn-info btn-sm"
+
