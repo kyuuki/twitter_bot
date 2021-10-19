@@ -1,0 +1,22 @@
+# https://docs.rubocop.org/rubocop/1.22/configuration.html
+
+# https://github.com/cookpad/styleguide/blob/master/ruby.ja.md
+#inherit_from: .rubocop_cp.yml  # クックパッド設定
+
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+AllCops:
+  DisabledByDefault: true
+#  Exclude:
+#    - 'test/**/*'
+#    - 'lib/**/*'
+#    - 'db/**/*'
+#    - 'config/**/*'
+
+Lint:
+  Enabled: true
+
+Security:
+  Enabled: true
