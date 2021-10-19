@@ -22,4 +22,12 @@ module TwitterUtil
       raise exception
     end
   end
+
+  def self.get_media_uri_https(tweet)
+    tweet.media.each do |m|
+      return m.media_uri_https
+    end
+
+    return nil
+  end
 end

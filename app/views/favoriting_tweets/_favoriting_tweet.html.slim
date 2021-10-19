@@ -4,7 +4,7 @@ tr
   td = link_to favoriting_tweet.user_screen_name, favoriting_tweet.user_uri, target: "_blank"
   td
     = link_to favoriting_tweet.user_uri, target: "_blank"
-      = image_tag(favoriting_tweet.user_profile_image_url)
+      = image_tag(favoriting_tweet.user_profile_image_url, class: "img-responsive")
   td = l(favoriting_tweet.tweeted_at, format: :long)
   td
     - if favoriting_tweet.favorited

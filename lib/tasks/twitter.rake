@@ -25,7 +25,7 @@ end
 def post_random_category(now, category)
   # ツイート取得
   messages = Message.valid_category(now, category)
-    
+
   if (messages.size == 0)
     Rails.logger.info "There is no category message."
     return nil
@@ -56,7 +56,7 @@ def post_random_category_by_schedule(now, category)
                 # TODO: DB に依存する部分を一カ所にまとめたい。
                 .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
                 #.where("strftime('%H%M%S', post_time) = :time", { time: post_time })  # SQLite3
-  
+
   if (schedules.size == 0)
     Rails.logger.info "There is no schedule."
     return nil
@@ -159,7 +159,7 @@ namespace :twitter do
   end
 
   #
-  # お気に入り対象のツイートを保存
+  # お気に入り対象ツイート取得
   #
   desc "Get favorite targets"
   task get_favorite_target: :environment do |task|
@@ -169,7 +169,7 @@ namespace :twitter do
 
     now = Time.current
 
-    # TODO: 管理画面から変更できるように
+    # 検索キーワード取得
     config = Config.find_by(key: "favorite_tweets.keyword")
     if config.nil?
       Rails.logger.fatal "There is no keyword."
@@ -182,6 +182,31 @@ namespace :twitter do
     Rails.logger.info "Task #{task.name} end."
   end
 
+  #
+  # お気に入り対象をお気に入り
+  #
+  desc "Favorite target Tweets"
+  task :favorite_tweets, [ 'account_id', 'favorite_count' ] => :environment do |task, args|
+    DEFAULT_FAVORITE_COUNT = 3  # デフォルトは 3 つお気に入り
+
+    setup_logger
+
+    Rails.logger.info "Task #{task.name} start."
+
+    #
+    # 引数処理
+    #
+    account_id = args.account_id.nil? ? nil : args.account_id.to_i
+    count = args.favorite_count.nil? ? DEFAULT_FAVORITE_COUNT : args.favorite_count.to_i
+
+    now = Time.current
+    pp account_id
+    pp count
+
+    FavoritingTweet.favorite!(account_id, count, now)
+
+    Rails.logger.info "Task #{task.name} end."
+  end
 
   #
   # スケジュールの曜日、時刻に、特定のカテゴリから 1 つをランダムツイートして削除 (10 分おき)

@@ -7,7 +7,7 @@ class FavoritingTweet < ApplicationRecord
   #
   def self.get_and_save_target_tweets(query, now)
     account = TwitterAccount.first  # TODO: アカウントをどこで決定するか
-    #account = TwitterAccount.find(2)  # TODO: アカウントをどこで決定するか
+    #account = TwitterAccount.find(2)
     client = account.twitter_client
 
     tweets = client.search(query, lang: :ja)
@@ -27,11 +27,42 @@ class FavoritingTweet < ApplicationRecord
           uri: t.uri,
           user_screen_name: t.user.screen_name,
           user_uri: t.user.uri,
+          #user_profile_image_url: TwitterUtil.get_media_uri_https(t).presence || t.user.profile_image_url,
           user_profile_image_url: t.user.profile_image_url,
           tweeted_at: t.created_at,
           favorited: false,
         )
       end
+    end
+  end
+
+  #
+  # 最新の数件をお気に入り
+  #
+  def self.favorite!(account_id, count, now)
+    if count <= 0
+      raise ArgumentError, "count = #{count}"
+    end
+
+    if account_id.nil?
+      account = TwitterAccount.first
+    else
+      account = TwitterAccount.find(account_id)
+    end
+    client = account.twitter_client
+
+    logger.info "TwitterAccout = #{account.account}"
+
+    tweets = FavoritingTweet.where(favorited: false).order(tweeted_at: :asc)
+    tweet_ids = tweets[0..count - 1].map(&:identifier)
+    logger.info "tweet_ids = #{tweet_ids}"
+
+    client.favorite!(tweet_ids)
+
+    # お気に入り済みに TODO: 本当はトランザクション
+    tweets[0..count - 1].each do |t|
+      t.favorited = true
+      t.save
     end
   end
 end
