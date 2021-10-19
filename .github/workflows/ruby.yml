@@ -21,6 +21,32 @@ jobs:
       matrix:
         ruby-version: ['2.7.4']
 
+    # Rails を別コンテナでやる場合。
+    #container:
+    #  image: ruby:2.7.4
+
+    # https://docs.github.com/ja/actions/using-containerized-services/creating-postgresql-service-containers
+    services:
+      # サービスコンテナへのアクセスに使用されるラベル
+      postgres:
+        # Docker Hub のイメージ
+        # https://hub.docker.com/_/postgres
+        image: postgres
+        # localhost でやる場合にはマッピングが必要？
+        ports:
+          - 5432:5432
+        # postgres のパスワードを入力する
+        env:
+          # デフォルトの明記しておこう
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        # postgres が起動するまで待機するようにヘルスチェックを設定する
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -32,4 +58,13 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
-      run: bundle exec rake
+      run: |
+        bundle exec rails db:create
+        bundle exec rails db:migrate
+      env:
+        RAILS_ENV: test
+        # PostgreSQLサービスコンテナとの通信に使われるホスト名
+        #POSTGRES_HOST: postgres
+        POSTGRES_HOST: localhost
+        # デフォルトのPostgreSQLポート
+        POSTGRES_PORT: 5432
