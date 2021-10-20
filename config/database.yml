@@ -58,11 +58,11 @@ development:
 test:
   <<: *default
   database: twitter_bot_test
-  # TODO: とりあえず、直書き
+  # TODO: GitHub Actions との整合性をどう取るか
   # ../.github/workflows/ruby.yml
   host: <%= ENV['POSTGRES_HOST'] %>
-  username: postgres
-  password: postgres
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

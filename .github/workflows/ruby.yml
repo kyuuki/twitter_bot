@@ -37,7 +37,7 @@ jobs:
           - 5432:5432
         # postgres のパスワードを入力する
         env:
-          # デフォルトの明記しておこう
+          # デフォルトの値を明記しておく
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         # postgres が起動するまで待機するようにヘルスチェックを設定する
@@ -68,3 +68,6 @@ jobs:
         POSTGRES_HOST: localhost
         # デフォルトのPostgreSQLポート
         POSTGRES_PORT: 5432
+        # services - postgres と合わせる
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
