@@ -61,6 +61,7 @@ jobs:
       run: |
         bundle exec rails db:create
         bundle exec rails db:migrate
+        bundle exec rails test
       env:
         RAILS_ENV: test
         # PostgreSQLサービスコンテナとの通信に使われるホスト名
@@ -71,3 +72,6 @@ jobs:
         # services - postgres と合わせる
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
+    - name: RuboCop
+      run: |
+        rubocop
