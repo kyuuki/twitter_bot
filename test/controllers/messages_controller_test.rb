@@ -1,8 +1,13 @@
 require 'test_helper'
 
 class MessagesControllerTest < ActionDispatch::IntegrationTest
+  include Warden::Test::Helpers
+
   setup do
-    @message = messages(:one)
+    @message = FactoryBot.create(:message)
+
+    @admin_user = FactoryBot.create(:admin_user)
+    login_as(@admin_user)
   end
 
   test "should get index" do
@@ -17,10 +22,10 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create message" do
     assert_difference('Message.count') do
-      post messages_url, params: { message: { category: @message.category, from_at: @message.from_at, text: @message.text, to_at: @message.to_at } }
+      post messages_url, params: { message: { category: @message.category, from_at: @message.from_at, text: @message.text, to_at: @message.to_at, twitter_account_id: @message.twitter_account_id } }
     end
 
-    assert_redirected_to message_url(Message.last)
+    assert_redirected_to messages_url
   end
 
   test "should show message" do
@@ -35,7 +40,7 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
 
   test "should update message" do
     patch message_url(@message), params: { message: { category: @message.category, from_at: @message.from_at, text: @message.text, to_at: @message.to_at } }
-    assert_redirected_to message_url(@message)
+    assert_redirected_to messages_url
   end
 
   test "should destroy message" do

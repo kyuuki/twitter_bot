@@ -1,48 +1,48 @@
 require 'test_helper'
 
 class SchedulesControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @schedule = schedules(:one)
-  end
+  # setup do
+  #   @schedule = schedules(:one)
+  # end
 
-  test "should get index" do
-    get schedules_url
-    assert_response :success
-  end
+  # test "should get index" do
+  #   get schedules_url
+  #   assert_response :success
+  # end
 
-  test "should get new" do
-    get new_schedule_url
-    assert_response :success
-  end
+  # test "should get new" do
+  #   get new_schedule_url
+  #   assert_response :success
+  # end
 
-  test "should create schedule" do
-    assert_difference('Schedule.count') do
-      post schedules_url, params: { schedule: { category: @schedule.category, post_time: @schedule.post_time, post_weekday: @schedule.post_weekday } }
-    end
+  # test "should create schedule" do
+  #   assert_difference('Schedule.count') do
+  #     post schedules_url, params: { schedule: { category: @schedule.category, post_time: @schedule.post_time, post_weekday: @schedule.post_weekday } }
+  #   end
 
-    assert_redirected_to schedule_url(Schedule.last)
-  end
+  #   assert_redirected_to schedule_url(Schedule.last)
+  # end
 
-  test "should show schedule" do
-    get schedule_url(@schedule)
-    assert_response :success
-  end
+  # test "should show schedule" do
+  #   get schedule_url(@schedule)
+  #   assert_response :success
+  # end
 
-  test "should get edit" do
-    get edit_schedule_url(@schedule)
-    assert_response :success
-  end
+  # test "should get edit" do
+  #   get edit_schedule_url(@schedule)
+  #   assert_response :success
+  # end
 
-  test "should update schedule" do
-    patch schedule_url(@schedule), params: { schedule: { category: @schedule.category, post_time: @schedule.post_time, post_weekday: @schedule.post_weekday } }
-    assert_redirected_to schedule_url(@schedule)
-  end
+  # test "should update schedule" do
+  #   patch schedule_url(@schedule), params: { schedule: { category: @schedule.category, post_time: @schedule.post_time, post_weekday: @schedule.post_weekday } }
+  #   assert_redirected_to schedule_url(@schedule)
+  # end
 
-  test "should destroy schedule" do
-    assert_difference('Schedule.count', -1) do
-      delete schedule_url(@schedule)
-    end
+  # test "should destroy schedule" do
+  #   assert_difference('Schedule.count', -1) do
+  #     delete schedule_url(@schedule)
+  #   end
 
-    assert_redirected_to schedules_url
-  end
+  #   assert_redirected_to schedules_url
+  # end
 end
