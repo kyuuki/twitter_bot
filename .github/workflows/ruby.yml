@@ -74,4 +74,4 @@ jobs:
         POSTGRES_PASSWORD: postgres
     - name: RuboCop
       run: |
-        rubocop
+        bundle exec rubocop
