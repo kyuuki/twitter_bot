@@ -2,6 +2,8 @@ require 'twitter'
 require 'rss'
 require "./lib/tasks/task_util"
 
+DEFAULT_FAVORITE_COUNT = 3  # お気に入り対象をお気に入りするときのデフォルト件数
+
 #
 # 現在時刻から投稿時刻を取得 (10 分単位)
 #
@@ -187,8 +189,6 @@ namespace :twitter do
   #
   desc "Favorite target Tweets"
   task :favorite_tweets, [ 'account_id', 'favorite_count' ] => :environment do |task, args|
-    DEFAULT_FAVORITE_COUNT = 3  # デフォルトは 3 つお気に入り
-
     setup_logger
 
     Rails.logger.info "Task #{task.name} start."

@@ -39,7 +39,7 @@ class FavoritingTweet < ApplicationRecord
   #
   # 最新の数件をお気に入り
   #
-  def self.favorite!(account_id, count, now)
+  def self.favorite!(account_id, count)
     if count <= 0
       raise ArgumentError, "count = #{count}"
     end

@@ -31,7 +31,7 @@ module ScrapingUtil
     # /uxxxx になっているのを UTF-8 に
     str = str.gsub(/\\u([\da-fA-F]{4})/) { [$1].pack('H*').unpack('n*').pack('U*') }
     # str が "xxx\nyyy" (ダブルクォーテーションも文字列の一部) になっているのを Ruby の文字列として扱う
-    str = eval(str)
+    str = eval(str)  # rubocop:disable Security/Eval
 
     doc = Nokogiri::HTML.parse(str)
 

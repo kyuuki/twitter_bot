@@ -110,16 +110,20 @@ class MessagesController < ApplicationController
         delete_all_and_create_from_csv(twitter_account, csv)
       end
     rescue ActiveRecord::RecordInvalid => e
+      logger.error e.message
+
       flash.now[:alert] = "システムでエラーが発生しました。"
       render :upload_new
       return
     rescue CSV::MalformedCSVError => e
+      logger.error e.message
+
       # CSV 不正
       flash.now[:alert] = "CSV ファイル読み込みでエラーが発生しました。"
       render :upload_new
       return
     end
-    
+
     redirect_to messages_url, notice: 'アップロードが完了しました。'
   end
 

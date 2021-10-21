@@ -24,7 +24,10 @@ module TwitterUtil
   end
 
   def self.get_media_uri_https(tweet)
-    tweet.media.each do |m|
+    # Lint/UnreachableLoop: This loop will have at most one iteration.
+    # って言われるけど、この書き方で良くない？
+    # tweet.media が 0 or 1 以上で分岐しろってこと？
+    tweet.media.each do |m|  # rubocop:disable Lint/UnreachableLoop
       return m.media_uri_https
     end
 
