@@ -1,22 +1,14 @@
-# https://docs.rubocop.org/rubocop/1.22/configuration.html
+inherit_gem:
+  rubocop-rails_config:
+    - config/rails.yml
 
-# https://github.com/cookpad/styleguide/blob/master/ruby.ja.md
-#inherit_from: .rubocop_cp.yml  # クックパッド設定
+Style/StringLiterals:
+  Exclude:
+    - Gemfile
+    - Rakefile
+    - config/**/*
+    - test/**/*
 
-require:
-  - rubocop-performance
-  - rubocop-rails
+Style/FrozenStringLiteralComment:
+  Enabled: false  # 早いうちに 3.0 に上げるので無視する
 
-AllCops:
-  DisabledByDefault: true
-#  Exclude:
-#    - 'test/**/*'
-#    - 'lib/**/*'
-#    - 'db/**/*'
-#    - 'config/**/*'
-
-Lint:
-  Enabled: true
-
-Security:
-  Enabled: true
