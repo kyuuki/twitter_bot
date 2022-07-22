@@ -1,6 +1,6 @@
 class Message < ApplicationRecord
-  UNLIMITED_FORM_AT = Time.zone.parse('1970-01-01 00:00:00')
-  UNLIMITED_TO_AT = Time.zone.parse('2101-01-01 00:00:00')
+  UNLIMITED_FORM_AT = Time.zone.parse("1970-01-01 00:00:00")
+  UNLIMITED_TO_AT = Time.zone.parse("2101-01-01 00:00:00")
 
   belongs_to :twitter_account
 

@@ -31,6 +31,6 @@ module TwitterUtil
       return m.media_uri_https
     end
 
-    return nil
+    nil
   end
 end

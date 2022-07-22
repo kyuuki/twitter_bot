@@ -16,7 +16,7 @@ class FavoritingTweet < ApplicationRecord
     tweets.take(10).each do |t|
       # 3 日以内に同一ユーザーからツイートがあったら保存しない
       same_tweets = FavoritingTweet.where(user_screen_name: t.user.screen_name).where("tweeted_at > ?", now.ago(3.days))
-      if (same_tweets.size > 0)
+      if same_tweets.size > 0
         next
       end
 

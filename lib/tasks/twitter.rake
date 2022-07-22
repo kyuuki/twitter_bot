@@ -1,5 +1,5 @@
-require 'twitter'
-require 'rss'
+require "twitter"
+require "rss"
 require "./lib/tasks/task_util"
 
 DEFAULT_FAVORITE_COUNT = 3  # お気に入り対象をお気に入りするときのデフォルト件数
@@ -15,7 +15,7 @@ def get_post_time_from_now(now)
   m = (now.utc.min / 10) * 10  # 1 分単位切り捨て (34 → 30, 29 → 20)
   post_time = "%02d%02d00" % [h, m]
 
-  return post_time
+  post_time
 end
 
 #
@@ -28,7 +28,7 @@ def post_random_category(now, category)
   # ツイート取得
   messages = Message.valid_category(now, category)
 
-  if (messages.size == 0)
+  if messages.size == 0
     Rails.logger.info "There is no category message."
     return nil
   end
@@ -37,7 +37,7 @@ def post_random_category(now, category)
   message = messages[rand(messages.size)]
   message.post
 
-  return message
+  message
 end
 
 #
@@ -59,7 +59,7 @@ def post_random_category_by_schedule(now, category)
                 .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
                 #.where("strftime('%H%M%S', post_time) = :time", { time: post_time })  # SQLite3
 
-  if (schedules.size == 0)
+  if schedules.size == 0
     Rails.logger.info "There is no schedule."
     return nil
   end
@@ -69,7 +69,7 @@ def post_random_category_by_schedule(now, category)
   #
   message = post_random_category(now, category)
 
-  return message
+  message
 end
 
 #
@@ -82,7 +82,7 @@ namespace :twitter do
   # 単純投稿 (該当カテゴリの最初の一つのみ)
   #
   desc "Simple tweet"
-  task :post_first, [ 'category' ] => :environment do |task, args|
+  task :post_first, [ "category" ] => :environment do |task, args|
     setup_logger
 
     Rails.logger.info "Task #{task.name} start."
@@ -99,7 +99,7 @@ namespace :twitter do
     # ツイート取得
     messages = Message.valid_category(now, category)
 
-    if (messages.size < 1)
+    if messages.size < 1
       Rails.logger.error "There is no message."  # 手動なのでエラーにしておく
       Rails.logger.error "Task #{task.name} failed."
       next
@@ -128,7 +128,7 @@ namespace :twitter do
   # スケジュールランダム投稿
   #
   desc "Scheduled random tweet"
-  task :scheduled_post_random, [ 'category' ] => :environment do |task, args|
+  task :scheduled_post_random, [ "category" ] => :environment do |task, args|
     setup_logger
 
     Rails.logger.info "Task #{task.name} start."
@@ -188,7 +188,7 @@ namespace :twitter do
   # お気に入り対象をお気に入り
   #
   desc "Favorite target Tweets"
-  task :favorite_tweets, [ 'account_id', 'favorite_count' ] => :environment do |task, args|
+  task :favorite_tweets, [ "account_id", "favorite_count" ] => :environment do |task, args|
     setup_logger
 
     Rails.logger.info "Task #{task.name} start."
@@ -212,9 +212,9 @@ namespace :twitter do
   # スケジュールの曜日、時刻に、特定のカテゴリから 1 つをランダムツイートして削除 (10 分おき)
   #
   desc "Tweet scheduled message and delete"
-  task :scheduled_post_and_delete_random, [ 'category' ] => :environment do |task, args|
+  task :scheduled_post_and_delete_random, [ "category" ] => :environment do |task, args|
     setup_logger
-    
+
     Rails.logger.info "Task #{task.name} start."
 
     # 現在時刻
@@ -225,24 +225,24 @@ namespace :twitter do
     # カテゴリ
     category = args.category.to_i
     Rails.logger.info "category = #{category}"
-    
+
     message = post_random_category_by_schedule(now, category)
-    if (message == nil)
+    if message == nil
       Rails.logger.info "Task #{task.name} failed."
       next
     end
 
     # ツイートが成功したら削除
     message.destroy
-    
+
     Rails.logger.info "Task #{task.name} end."
   end
-  
+
   #
   # 特定の曜日、時刻にメッセージをツイート (10 分おき)
   #
   desc "Tweet a weekday time message"
-  task :post_weekday_time, [ 'category' ] => :environment do |task, args|
+  task :post_weekday_time, [ "category" ] => :environment do |task, args|
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info "Task #{task.name} start."
 
@@ -276,7 +276,7 @@ namespace :twitter do
                  .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
                  #.where("time(post_time) = :time", { time: post_time })  # SQLite3
 
-    if (messages.size == 0)
+    if messages.size == 0
       Rails.logger.info "There is no category message."
       Rails.logger.info "Task #{task.name} failed."
       next
@@ -294,7 +294,7 @@ namespace :twitter do
   # 特定のカテゴリから 1 つをランダムツイート
   #
   desc "Tweet a category random message"
-  task :post_random, [ 'category' ] => :environment do |task, args|
+  task :post_random, [ "category" ] => :environment do |task, args|
     setup_logger
 
     Rails.logger.info "Task #{task.name} start."
@@ -311,12 +311,12 @@ namespace :twitter do
     #
     # 対象のカテゴリから 1 つランダムにツイート
     #
-    if (post_random_category(now, category) == nil)
+    if post_random_category(now, category) == nil
       Rails.logger.info "There is no category message."
       Rails.logger.info "Task #{task.name} failed."
       next
     end
-    
+
     Rails.logger.info "Task #{task.name} end."
   end
 
@@ -324,7 +324,7 @@ namespace :twitter do
   # 特定のカテゴリメッセージをツイート (最初に一つ)
   #
   desc "Tweet a category message"
-  task :post, [ 'category' ] => :environment do |task, args|
+  task :post, [ "category" ] => :environment do |task, args|
     # https://qiita.com/naoty_k/items/0be1a055932b5b461766
     Rails.logger = Logger.new(STDOUT)
     Rails.logger.info "Task #{task.name} start."
@@ -340,7 +340,7 @@ namespace :twitter do
     # ツイート作成
     messages = Message.where(twitter_account: twitter, category: category).where("from_at <= :now AND :now < to_at", { now: Time.zone.now }).order(id: :desc)
 
-    if (messages.size == 0)
+    if messages.size == 0
       Rails.logger.info "There is no category message."
       Rails.logger.fatal "Task #{task.name} failed."
       next  # https://stackoverflow.com/questions/2316475/how-do-i-return-early-from-a-rake-task
@@ -373,7 +373,7 @@ namespace :twitter do
   # RSS の最新記事をツイート
   #
   desc "Tweet RSS latest article"
-  task :latest_rss, [ 'rss_url' ] => :environment do |task, args|
+  task :latest_rss, [ "rss_url" ] => :environment do |task, args|
     # 基本的には不明な例外は発生しないように設計。end ログが唯一の手がかり。
 
     # https://qiita.com/naoty_k/items/0be1a055932b5b461766
@@ -386,7 +386,7 @@ namespace :twitter do
 
     # Twitter アカウント
     twitter = TwitterAccount.first
-    if (twitter.nil?)
+    if twitter.nil?
       Rails.logger.info "There is no TwitterAccount."
       Rails.logger.fatal "Task #{task.name} failed."
       next
@@ -435,7 +435,7 @@ namespace :twitter do
   # https://news.netkeiba.com/?rf=navi スクレイピングツイート
   #
   desc "Tweet netkeiba.com"
-  task :latest_news_netkeiba => :environment do |task|
+  task latest_news_netkeiba: :environment do |task|
     # 基本的には不明な例外は発生しないように設計。end ログが唯一の手がかり。
 
     # https://qiita.com/naoty_k/items/0be1a055932b5b461766
@@ -444,7 +444,7 @@ namespace :twitter do
 
     # Twitter アカウント
     twitter = TwitterAccount.first
-    if (twitter.nil?)
+    if twitter.nil?
       Rails.logger.info "There is no TwitterAccount."
       Rails.logger.fatal "Task #{task.name} failed."
       next
@@ -467,14 +467,14 @@ namespace :twitter do
     # ツイート取得 (ランダムツイート)
     messages = Message.where(twitter_account: twitter, category: 2)
 
-    if (messages.size == 0)
+    if messages.size == 0
       Rails.logger.info "There is no category message."
       Rails.logger.fatal "Task #{task.name} failed."
       next
     end
 
     message = messages[rand(messages.size)]
-    
+
     # ツイート作成
     text = "#{title}\n\n#{message.text}\n\n#{url}"
     Rails.logger.info text

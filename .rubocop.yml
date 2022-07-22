@@ -6,9 +6,15 @@ Style/StringLiterals:
   Exclude:
     - Gemfile
     - Rakefile
+    - config.ru
     - config/**/*
     - test/**/*
 
 Style/FrozenStringLiteralComment:
   Enabled: false  # 早いうちに 3.0 に上げるので無視する
 
+Layout/LeadingCommentSpace:
+  Enabled: false  # 一時的に無効にするときに使っている
+
+Layout/CommentIndentation:
+  Enabled: false  # 一時的に無効にするときにインデントはズレる

@@ -84,4 +84,3 @@ gem 'nokogiri'
 
 # CSV など
 gem 'roo'
-

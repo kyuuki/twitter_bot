@@ -9,7 +9,7 @@ class MessagesController < ApplicationController
     #@messages = Message.order(:category, :post_weekday).order("time(post_time, '+9 hours')")
     # ↓PostgreSQL 専用
     @messages = Message.order(:category, :post_weekday).order("post_time AT TIME ZONE 'Japan'").order(:id)
-    @messages.map {|message| message.to_view!}
+    @messages.map { |message| message.to_view! }
   end
 
   # GET /messages/1
@@ -39,7 +39,7 @@ class MessagesController < ApplicationController
 
     respond_to do |format|
       if @message.save
-        format.html { redirect_to messages_url, notice: 'Message was successfully created.' }
+        format.html { redirect_to messages_url, notice: "Message was successfully created." }
         format.json { render :show, status: :created, location: @message }
       else
         @message.to_view!
@@ -59,7 +59,7 @@ class MessagesController < ApplicationController
 
     respond_to do |format|
       if @message.save
-        format.html { redirect_to messages_url, notice: 'Message was successfully updated.' }
+        format.html { redirect_to messages_url, notice: "Message was successfully updated." }
         format.json { render :show, status: :ok, location: @message }
       else
         @message.to_view!
@@ -75,28 +75,28 @@ class MessagesController < ApplicationController
   def destroy
     @message.destroy
     respond_to do |format|
-      format.html { redirect_to messages_url, notice: 'Message was successfully destroyed.' }
+      format.html { redirect_to messages_url, notice: "Message was successfully destroyed." }
       format.json { head :no_content }
     end
   end
-  
+
   def upload_new
   end
-  
+
   def upload
     upload_file = params[:file]
-    
+
     if upload_file.nil?
       flash.now[:alert] = "ファイルを選択してください。"
       render :upload_new
       return
     end
-    
+
     twitter_account = TwitterAccount.first
 
     # TODO: トランザクション
     # TODO: エラー処理
-    
+
     # Excel で 1 行目が複数行の CSV を出力するとエラー。どうやっても解消できず。
     # ヘッダを改行なしで入れるルールにしておく。
     csv = Roo::CSV.new(upload_file.path,
@@ -124,7 +124,7 @@ class MessagesController < ApplicationController
       return
     end
 
-    redirect_to messages_url, notice: 'アップロードが完了しました。'
+    redirect_to messages_url, notice: "アップロードが完了しました。"
   end
 
   private

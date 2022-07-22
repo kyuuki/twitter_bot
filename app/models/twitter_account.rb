@@ -7,6 +7,6 @@ class TwitterAccount < ApplicationRecord
       config.access_token_secret = access_token_secret
     end
 
-    return client
+    client
   end
 end

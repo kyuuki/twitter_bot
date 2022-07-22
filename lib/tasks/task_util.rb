@@ -2,7 +2,6 @@
 # タスク用ユーティリティ
 #
 module TaskUtil
-
   # TODO: ログレベルはどこで指定する？
   def setup_logger
     Rails.logger = Logger.new(STDOUT)
