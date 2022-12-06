@@ -1,0 +1,24 @@
+- content_for :title
+  | ツイート履歴
+
+.box
+  .box-header.with-border
+    .pull-right
+      = link_to keyword_favoriting_tweets_path, { class: "btn btn-default btn-sm" } do
+        i.fa.fa-search
+        | &nbsp; キーワード登録
+
+  .box-body.table-responsive
+
+    table.table.table-bordered.table-hover
+      thead
+        tr
+          th.col-sm-2 = "作成時刻"
+          th.col-sm-2 = FavoritingTweet.human_attribute_name(:identifier)
+          th.col-sm-5 = FavoritingTweet.human_attribute_name(:text)
+          th style="width: 140px;" アクション
+      tbody
+        == render @tweet_histories
+
+  .box-footer
+    /= link_to 'New Favoriting tweet', new_favoriting_tweet_path

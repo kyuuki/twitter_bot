@@ -58,12 +58,42 @@ module TwitterUtil
 
     if (response.status / 100 == 2)
       Rails.logger.info "Twitter update '#{message}'."
+      Rails.logger.debug "#{response.body}"
+      Rails.logger.info "id = #{response.body["data"]["id"]}."
 
-      # TODO: ツイート履歴保存
+      # ツイート履歴保存
+      TweetHistory.create(identifier: response.body["data"]["id"], text: message)
     else
       Rails.logger.fatal "Twitter update error."
       Rails.logger.info response.body
       raise "Twitter update error."
+    end
+  end
+
+  def self.delete(id, consumer_key, consumer_secret, access_token, access_token_secret)
+    connection = Faraday.new do |conn|
+      conn.request(:oauth,
+                   consumer_key: consumer_key,
+                   consumer_secret: consumer_secret,
+                   token: access_token,
+                   token_secret: access_token_secret)
+
+      conn.request(:json)
+      conn.response(:json)
+    end
+
+    response = connection.delete("https://api.twitter.com/2/tweets/#{id}",
+                                 {},
+                                 "Content-Type" => "application/json")
+
+    if (response.status / 100 == 2)
+      Rails.logger.info "Twitter delete '#{id}'."
+      Rails.logger.debug "#{response.body}"
+      #Rails.logger.info "id = #{response.body["data"]["id"]}."
+    else
+      Rails.logger.fatal "Twitter delete error."
+      Rails.logger.info response.body
+      raise "Twitter delete error."
     end
   end
 end

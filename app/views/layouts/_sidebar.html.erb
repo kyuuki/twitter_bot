@@ -38,5 +38,14 @@
       <i class="fa fa-calendar"></i> <span>アカウント一覧</span>
     <% end %>
   </li>
+  <% if request.path_info == tweet_histories_path %>
+    <li class="active">
+  <% else %>
+    <li>
+  <% end %>
+    <%= link_to tweet_histories_path do %>
+      <i class="fa fa-calendar"></i> <span>ツイート履歴</span>
+    <% end %>
+  </li>
 </ul>
 <!-- /.sidebar-menu -->

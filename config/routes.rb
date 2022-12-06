@@ -19,6 +19,11 @@ Rails.application.routes.draw do
       end
     end
     resources :twitter_accounts
+    resources :tweet_histories, only: [:index] do
+      member do
+        get 'delete'
+      end
+    end
     resources :configs
   end
 

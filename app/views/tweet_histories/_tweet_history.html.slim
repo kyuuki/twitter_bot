@@ -1,0 +1,7 @@
+tr
+  td = l(tweet_history.created_at, format: :long)
+  td = link_to tweet_history.identifier, "https://twitter.com/kyuuki_bot/status/#{tweet_history.identifier}", target: "_blank"
+  td = tweet_history.text
+  td.text-right
+    = link_to 'ツイート削除', delete_tweet_history_path(tweet_history.id), { class: "btn btn-default btn-sm" }
+
