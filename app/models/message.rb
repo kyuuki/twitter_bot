@@ -67,7 +67,8 @@ class Message < ApplicationRecord
   #
   def post
     account = self.twitter_account
-    TwitterUtil.post(self.text,
+    #TwitterUtil.post(self.text,
+    TwitterUtil.post_v2(self.text,
                      account.consumer_key,
                      account.consumer_secret,
                      account.access_token,

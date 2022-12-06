@@ -84,3 +84,8 @@ gem 'nokogiri'
 
 # CSV など
 gem 'roo'
+
+# HTTP using Twitter API v2
+gem 'faraday'
+gem 'faraday_middleware'
+

@@ -33,4 +33,37 @@ module TwitterUtil
 
     nil
   end
+
+  #
+  # Twitter API v2 対応
+  #
+  # - Faraday を利用
+  # - https://github.com/yhara/simple_twitter/blob/main/lib/simple_twitter.rb を参考に
+  #
+  def self.post_v2(message, consumer_key, consumer_secret, access_token, access_token_secret)
+    connection = Faraday.new do |conn|
+      conn.request(:oauth,
+                   consumer_key: consumer_key,
+                   consumer_secret: consumer_secret,
+                   token: access_token,
+                   token_secret: access_token_secret)
+
+      conn.request(:json)
+      conn.response(:json)
+    end
+
+    response = connection.post("https://api.twitter.com/2/tweets",
+                               { text: message },
+                               "Content-Type" => "application/json")
+
+    if (response.status / 100 == 2)
+      Rails.logger.info "Twitter update '#{message}'."
+
+      # TODO: ツイート履歴保存
+    else
+      Rails.logger.fatal "Twitter update error."
+      Rails.logger.info response.body
+      raise "Twitter update error."
+    end
+  end
 end
