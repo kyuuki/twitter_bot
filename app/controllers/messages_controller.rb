@@ -8,7 +8,7 @@ class MessagesController < ApplicationController
     # ↓SQLite 専用
     #@messages = Message.order(:category, :post_weekday).order("time(post_time, '+9 hours')")
     # ↓PostgreSQL 専用
-    @messages = Message.order(:category, :post_weekday).order("post_time AT TIME ZONE 'Japan'").order(:id)
+    @messages = Message.order(:category_id, :post_weekday).order("post_time AT TIME ZONE 'Japan'").order(:id)
     @messages.map { |message| message.to_view! }
   end
 
@@ -135,7 +135,7 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:twitter_account_id, :category, :post_weekday, :post_time, :text, :from_at, :to_at)
+      params.require(:message).permit(:twitter_account_id, :category_id, :post_weekday, :post_time, :text, :from_at, :to_at)
     end
 
     def delete_all_and_create_from_csv(twitter_account, csv)

@@ -24,9 +24,9 @@ end
 #
 # 戻り値: ツイートしたメッセージ
 #
-def post_random_category(now, category)
+def post_random_category(now, category_id)
   # ツイート取得
-  messages = Message.valid_category(now, category)
+  messages = Message.valid_category_id(now, category_id)
 
   if messages.size == 0
     Rails.logger.info "There is no category message."
@@ -46,7 +46,7 @@ end
 #
 # 戻り値: ツイートしたメッセージ
 #
-def post_random_category_by_schedule(now, category)
+def post_random_category_by_schedule(now, category_id)
   # 現在時刻から取り出したい時刻を取得
   post_time = get_post_time_from_now(now)
   Rails.logger.info "post_time = #{post_time}"
@@ -54,7 +54,7 @@ def post_random_category_by_schedule(now, category)
   # スケジュール特定
   # 曜日と時刻でしぼる
   schedules = Schedule
-                .where(category: category, post_weekday: [now.wday, nil])
+                .where(category_id: category_id, post_weekday: [now.wday, nil])
                 # TODO: DB に依存する部分を一カ所にまとめたい。
                 .where("to_char(post_time, 'HH24MISS') = :time", { time: post_time })  # PostgreSQL
                 #.where("strftime('%H%M%S', post_time) = :time", { time: post_time })  # SQLite3
@@ -67,7 +67,7 @@ def post_random_category_by_schedule(now, category)
   #
   # スケジュールが存在すれば、対象のカテゴリから 1 つランダムにツイート
   #
-  message = post_random_category(now, category)
+  message = post_random_category(now, category_id)
 
   message
 end
@@ -82,7 +82,7 @@ namespace :twitter do
   # 単純投稿 (該当カテゴリの最初の一つのみ)
   #
   desc "Simple tweet"
-  task :post_first, [ "category" ] => :environment do |task, args|
+  task :post_first, [ "category_id" ] => :environment do |task, args|
     setup_logger
 
     Rails.logger.info "Task #{task.name} start."
@@ -93,11 +93,11 @@ namespace :twitter do
     Rails.logger.info "wday = #{now.wday}"
 
     # カテゴリ
-    category = args.category.to_i
-    Rails.logger.info "category = #{category}"
+    category_id = args.category_id.to_i
+    Rails.logger.info "category_id = #{category_id}"
 
     # ツイート取得
-    messages = Message.valid_category(now, category)
+    messages = Message.valid_category_id(now, category_id)
 
     if messages.size < 1
       Rails.logger.error "There is no message."  # 手動なのでエラーにしておく
@@ -105,7 +105,7 @@ namespace :twitter do
       next
     end
 
-    # ランダムに 1 つ送信
+    # 最初のメッセージ
     message = messages.first
 
     # TODO: 例外処理をどうするか？例外の種類と何をしたいかを明確に
@@ -125,10 +125,10 @@ namespace :twitter do
   end
 
   #
-  # スケジュールランダム投稿
+  # ランダム投稿 (該当カテゴリから 1 つをランダムにツイート)
   #
-  desc "Scheduled random tweet"
-  task :scheduled_post_random, [ "category" ] => :environment do |task, args|
+  desc "Tweet a category random message"
+  task :post_random, [ "category_id" ] => :environment do |task, args|
     setup_logger
 
     Rails.logger.info "Task #{task.name} start."
@@ -139,8 +139,8 @@ namespace :twitter do
     Rails.logger.info "wday = #{now.wday}"
 
     # カテゴリ
-    category = args.category.to_i
-    Rails.logger.info "category = #{category}"
+    category_id = args.category_id.to_i
+    Rails.logger.info "category_id = #{category_id}"
 
     #
     # ツイート取得 & 投稿
@@ -148,7 +148,43 @@ namespace :twitter do
     # TODO: 例外処理をどうするか？例外の種類と何をしたいかを明確に
     begin
       # ツイートしない場合は下でログを出力し、ここでは何もしない
-      post_random_category_by_schedule(now, category)
+      post_random_category(now, category_id)
+    rescue => exception
+      # TODO: ここら辺のエラーメッセージが被っている
+      Rails.logger.info "Message post error."
+      Rails.logger.info exception.message
+      Rails.logger.error "Task #{task.name} failed."
+      next
+    end
+
+    Rails.logger.info "Task #{task.name} end."
+  end
+
+  #
+  # スケジュールランダム投稿
+  #
+  desc "Scheduled random tweet"
+  task :scheduled_post_random, [ "category_id" ] => :environment do |task, args|
+    setup_logger
+
+    Rails.logger.info "Task #{task.name} start."
+
+    # 現在時刻
+    now = Time.current
+    Rails.logger.info "time = #{now}"
+    Rails.logger.info "wday = #{now.wday}"
+
+    # カテゴリ
+    category_id = args.category_id.to_i
+    Rails.logger.info "category_id = #{category_id}"
+
+    #
+    # ツイート取得 & 投稿
+    #
+    # TODO: 例外処理をどうするか？例外の種類と何をしたいかを明確に
+    begin
+      # ツイートしない場合は下でログを出力し、ここでは何もしない
+      post_random_category_by_schedule(now, category_id)
     rescue => exception
       # TODO: ここら辺のエラーメッセージが被っている
       Rails.logger.info "Message post error."
@@ -285,36 +321,6 @@ namespace :twitter do
     # 送信
     messages.each do |message|
       message.post
-    end
-
-    Rails.logger.info "Task #{task.name} end."
-  end
-
-  #
-  # 特定のカテゴリから 1 つをランダムツイート
-  #
-  desc "Tweet a category random message"
-  task :post_random, [ "category" ] => :environment do |task, args|
-    setup_logger
-
-    Rails.logger.info "Task #{task.name} start."
-
-    # 現在時刻
-    now = Time.current
-    Rails.logger.info "time = #{now}"
-    Rails.logger.info "wday = #{now.wday}"
-
-    # カテゴリ
-    category = args.category.to_i
-    Rails.logger.info "category = #{category}"
-
-    #
-    # 対象のカテゴリから 1 つランダムにツイート
-    #
-    if post_random_category(now, category) == nil
-      Rails.logger.info "There is no category message."
-      Rails.logger.info "Task #{task.name} failed."
-      next
     end
 
     Rails.logger.info "Task #{task.name} end."

@@ -1,8 +1,11 @@
 class Message < ApplicationRecord
+  extend ActiveHash::Associations::ActiveRecordExtensions
+
   UNLIMITED_FORM_AT = Time.zone.parse("1970-01-01 00:00:00")
   UNLIMITED_TO_AT = Time.zone.parse("2101-01-01 00:00:00")
 
   belongs_to :twitter_account
+  belongs_to :category
 
   validates :from_at, presence: true
   validates :to_at, presence: true
@@ -14,7 +17,7 @@ class Message < ApplicationRecord
 
   # 有効かどうかは 10 分ごとの値でなくリアルタイムの現在時刻をベースにする。
   scope :valid, ->(now) { where("from_at <= :now AND :now < to_at", { now: now }) }
-  scope :valid_category, ->(now, category) { valid(now).where(category: category) }
+  scope :valid_category_id, ->(now, category_id) { valid(now).where(category_id: category_id) }
 
   def category_is_week?
     self.category == 1
@@ -50,7 +53,7 @@ class Message < ApplicationRecord
 
   # カテゴリが曜日とランダム用
   def modify_for_weekday_and_random!
-    if self.category == 2
+    if self.category_id == 2
       self.post_weekday = nil
       self.post_time = nil
     end

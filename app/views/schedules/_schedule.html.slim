@@ -1,6 +1,6 @@
 tr
   td = schedule.id
-  td = schedule.category
+  td = schedule.category.name
   td = I18n.t("date.abbr_day_names")[schedule.post_weekday] unless schedule.post_weekday.nil?
   td = schedule.post_time.strftime("%H:%M") unless schedule.post_time.nil?
   td.text-right

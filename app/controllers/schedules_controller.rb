@@ -17,7 +17,7 @@ class SchedulesController < ApplicationController
   # GET /schedules/new
   def new
     @schedule = Schedule.new
-    @schedule.category = 3
+    @schedule.category_id = 3
   end
 
   # GET /schedules/1/edit
@@ -69,6 +69,6 @@ class SchedulesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def schedule_params
-      params.require(:schedule).permit(:category, :post_weekday, :post_time)
+      params.require(:schedule).permit(:category_id, :post_weekday, :post_time)
     end
 end

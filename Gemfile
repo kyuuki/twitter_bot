@@ -89,3 +89,6 @@ gem 'roo'
 gem 'faraday'
 gem 'faraday_middleware'
 
+# ActiveHash
+# https://github.com/active-hash/active_hash
+gem 'active_hash'

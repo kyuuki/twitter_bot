@@ -38,9 +38,9 @@
           = form.collection_select :twitter_account_id, TwitterAccount.all, :id, :account, {}, { class: "form-control" }
       /= form.hidden_field :twitter_account_id  // Twitter アカウントを隠すときに使う
       .form-group
-        = form.label :category, "", class: "col-sm-2 control-label"
+        = form.label :category_id, "", class: "col-sm-2 control-label"
         .col-sm-2
-          = form.select :category, [["曜日", 1], ["ランダム", 2], ["スケジュール", 3]], {}, { class: "form-control" }
+          = form.collection_select :category_id, Category.all, :id, :name, { include_blank: true}, { class: "form-control" }
         /.col-sm-2
           /= form.select :category, [["ランダム", 2]], {}, { class: "form-control" }
           = form.hidden_field :category, value: 2

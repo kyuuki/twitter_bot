@@ -232,3 +232,11 @@ ja:
       short: "%m/%d %H:%M"
       date: "%Y/%m/%d"
     pm: 午後
+
+  # ActiveHash Category の名前
+  category:
+    weekday: 曜日
+    random: ランダム
+    schedule: スケジュール
+    priodical: 定期
+    other: その他
