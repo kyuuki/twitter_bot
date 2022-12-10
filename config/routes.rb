@@ -24,6 +24,9 @@ Rails.application.routes.draw do
         get 'delete'
       end
     end
+    get 'periodical/minute', to: 'periodical#minute'
+    patch 'periodical/minute', to: 'periodical#minute_update'
+
     resources :configs
   end
 

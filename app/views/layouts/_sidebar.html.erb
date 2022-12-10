@@ -47,5 +47,14 @@
       <i class="fa fa-calendar"></i> <span>ツイート履歴</span>
     <% end %>
   </li>
+  <% if request.path_info == periodical_minute_path %>
+    <li class="active">
+  <% else %>
+    <li>
+  <% end %>
+    <%= link_to periodical_minute_path do %>
+      <i class="fa fa-calendar"></i> <span>定期ツイート間隔</span>
+    <% end %>
+  </li>
 </ul>
 <!-- /.sidebar-menu -->
