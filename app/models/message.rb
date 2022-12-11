@@ -71,7 +71,8 @@ class Message < ApplicationRecord
   def post
     account = self.twitter_account
     #TwitterUtil.post(self.text,
-    TwitterUtil.post_v2(self.text,
+    #TwitterUtil.post_v2(self.text,
+    TwitterUtil.post_v2("#{self.text}\n#{rand(100)}",  # ランダムな数字をお尻につける
                      account.consumer_key,
                      account.consumer_secret,
                      account.access_token,
