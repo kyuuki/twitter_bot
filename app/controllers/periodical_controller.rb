@@ -17,6 +17,5 @@ class PeriodicalController < ApplicationController
       # エラーメッセージの項目名がおかしいのは許容する
       render :minute
     end
-
   end
 end

@@ -56,7 +56,7 @@ module TwitterUtil
                                { text: message },
                                "Content-Type" => "application/json")
 
-    if (response.status / 100 == 2)
+    if response.status / 100 == 2
       Rails.logger.info "Twitter update '#{message}'."
       Rails.logger.debug "#{response.body}"
       Rails.logger.info "id = #{response.body["data"]["id"]}."
@@ -86,7 +86,7 @@ module TwitterUtil
                                  {},
                                  "Content-Type" => "application/json")
 
-    if (response.status / 100 == 2)
+    if (response.status / 100 == 2
       Rails.logger.info "Twitter delete '#{id}'."
       Rails.logger.debug "#{response.body}"
       #Rails.logger.info "id = #{response.body["data"]["id"]}."

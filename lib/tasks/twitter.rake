@@ -161,6 +161,67 @@ namespace :twitter do
   end
 
   #
+  # 定期ランダム投稿
+  #
+  desc "Tweet a category random message periodically"
+  task :periodical_post_random, [ "category_id" ] => :environment do |task, args|
+    setup_logger
+
+    Rails.logger.info "Task #{task.name} start."
+
+    # 現在時刻
+    now = Time.current
+    Rails.logger.debug "time = #{now}"
+    Rails.logger.debug "wday = #{now.wday}"
+
+    # カテゴリ
+    category_id = args.category_id.to_i
+    Rails.logger.debug "category_id = #{category_id}"
+
+    #
+    # ここだけ「ランダム投稿」との差分
+    #
+    # 定期ツイート間隔取得
+    minute = Config.get_periodical_minute
+    if minute.nil?
+      next
+    end
+
+    tweet_history = TweetHistory.last
+    if tweet_history.nil?
+      # 過去ツイートがなければツイート
+      Rails.logger.info "There is no tweet."
+    else
+      # ツイート間隔の時間を経過しているか？
+      # Time の引き算は秒
+      Rails.logger.debug now
+      Rails.logger.debug tweet_history.created_at
+      Rails.logger.debug now - tweet_history.created_at
+      if (now - tweet_history.created_at) < minute * 60
+        Rails.logger.info "#{minute} min. didn't pass."
+        next
+      end
+    end
+
+    #
+    # ツイート取得 & 投稿
+    #
+    # TODO: 例外処理をどうするか？例外の種類と何をしたいかを明確に
+    begin
+      # ツイートしない場合は下でログを出力し、ここでは何もしない
+      post_random_category(now, category_id)
+    rescue => exception
+      # TODO: ここら辺のエラーメッセージが被っている
+      Rails.logger.info "Message post error."
+      Rails.logger.info exception.message
+      Rails.logger.error "Task #{task.name} failed."
+      next
+    end
+
+    Rails.logger.info "Task #{task.name} end."
+  end
+
+  #
   # スケジュールランダム投稿
   #
   desc "Scheduled random tweet"
