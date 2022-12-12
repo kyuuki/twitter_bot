@@ -197,7 +197,7 @@ namespace :twitter do
       Rails.logger.debug now
       Rails.logger.debug tweet_history.created_at
       Rails.logger.debug now - tweet_history.created_at
-      if (now - tweet_history.created_at) < minute * 60
+      if (now - tweet_history.created_at) < (minute + 1) * 60  # 1 分程度の誤差を許容
         Rails.logger.info "#{minute} min. didn't pass."
         next
       end
