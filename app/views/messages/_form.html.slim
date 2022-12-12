@@ -43,7 +43,7 @@
           = form.collection_select :category_id, Category.all, :id, :name, { include_blank: true}, { class: "form-control" }
         .col-sm-2
           = form.select :category, [["ランダム", 2]], {}, { class: "form-control" }
-      = form.hidden_field :category, value: 4
+      = form.hidden_field :category_id, value: 4
       /.form-group
         = form.label :post_weekday, "", class: "col-sm-2 control-label"
         .col-sm-1
